@@ -7,6 +7,9 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-        
+        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+            <Button x:Name="AddPhrases" Content="Добавить фразы" HorizontalAlignment="Left" VerticalAlignment="Top" Width="175" Click="AddPhrases_Click" Margin="15" FontSize="18"/>
+            <Button Content="Начать тренировку" HorizontalAlignment="Left" VerticalAlignment="Top" Width="175" Margin="15" FontSize="18"/>
+        </StackPanel>
     </Grid>
 </Window>
