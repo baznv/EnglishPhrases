@@ -19,7 +19,7 @@ namespace EnglishPhrases
     /// </summary>
     public partial class AddWord : Window
     {
-        public AddWord()
+        public AddWord(string word)
         {
             InitializeComponent();
 
@@ -46,7 +46,6 @@ namespace EnglishPhrases
                     i++;
                 }
             }
-
         }
 
         private void lbl_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -56,7 +55,8 @@ namespace EnglishPhrases
 
         private void SaveBtn_Click(object sender, RoutedEventArgs e)
         {
-
+            DB.SaveWord(new EnglishWords() { Word = WordTb.Text, Transcription = TranscriptTb.Text});
+            this.Close();
         }
     }
 }

@@ -6,10 +6,10 @@
         xmlns:local="clr-namespace:EnglishPhrases"
         mc:Ignorable="d"
         Title="AddPhrases" Height="450" Width="800">
-    <StackPanel>
-        <TextBox x:Name="Phrase" Height="60" Margin="15" Padding="10,5" TextWrapping="Wrap"/>
-        <TextBlock x:Name="Transcription" Height="40" Margin="15" Padding="10,5" TextWrapping="Wrap"/>
-        <TextBox x:Name="Translate" Height="60" Margin="15" Padding="10,5" TextWrapping="Wrap"/>
-        <Button x:Name="AddWord" Content="AddWord" Height="40" FontSize="18" Width="175" HorizontalAlignment="Right" Margin="10" Click="Temp_Click" />
+    <StackPanel Background="LightGray">
+        <TextBox x:Name="PhraseTb" Height="Auto" Margin="15" Padding="10,5" TextWrapping="Wrap"  TextChanged="PhraseTb_TextChanged" PreviewKeyDown="PhraseTb_PreviewKeyDown" />
+        <TextBlock x:Name="TranscriptionTbl" Height="Auto" Margin="15" Padding="10,5" TextWrapping="Wrap"/>
+        <TextBox x:Name="TranslateTb" Height="Auto" Margin="15" Padding="10,5" TextWrapping="Wrap"/>
+        <Button x:Name="SaveSentenceBtn" Content="Save Sentence" Height="40" FontSize="18" Width="175" HorizontalAlignment="Center" Margin="10" />
     </StackPanel>
 </Window>

@@ -9,6 +9,7 @@
     <Grid>
         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
             <Button x:Name="AddPhrases" Content="Добавить фразы" HorizontalAlignment="Left" VerticalAlignment="Top" Width="175" Click="AddPhrases_Click" Margin="15" FontSize="18"/>
+            <Button x:Name="AddWords" Content="Добавить слова" HorizontalAlignment="Left" VerticalAlignment="Top" Width="175" Margin="15" FontSize="18" Click="AddWords_Click" />
             <Button Content="Начать тренировку" HorizontalAlignment="Left" VerticalAlignment="Top" Width="175" Margin="15" FontSize="18"/>
         </StackPanel>
     </Grid>

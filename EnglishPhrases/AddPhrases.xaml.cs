@@ -24,10 +24,18 @@ namespace EnglishPhrases
             InitializeComponent();
         }
 
-        private void Temp_Click(object sender, RoutedEventArgs e)
+        private void PhraseTb_TextChanged(object sender, TextChangedEventArgs e)
         {
-            AddWord aw = new AddWord();
-            aw.ShowDialog();
+        }
+
+        private void PhraseTb_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Space)
+            {
+                string[] words = PhraseTb.Text.Split(' ');
+                string word = words[words.Length-1];
+                new AddWord(word).ShowDialog();
+            }
         }
     }
 }

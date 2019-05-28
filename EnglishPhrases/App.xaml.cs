@@ -13,5 +13,6 @@ namespace EnglishPhrases
     /// </summary>
     public partial class App : Application
     {
+        public static string PathToDB = @"Phrases.db";
     }
 }
