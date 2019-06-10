@@ -73,6 +73,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Models\Phrase.cs" />
     <Compile Include="Other\DB.cs" />
     <Compile Include="Other\RelayCommand.cs" />
     <Compile Include="ViewModels\IPageViewModel.cs" />
@@ -90,7 +91,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Models\DBold.cs" />
-    <Compile Include="Models\Phrases.cs" />
     <Compile Include="Future\Transcript.cs" />
     <Compile Include="Views\ShowAllPhrasesV.xaml.cs">
       <DependentUpon>ShowAllPhrasesV.xaml</DependentUpon>

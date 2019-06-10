@@ -34,7 +34,7 @@ namespace EnglishPhrases.Other
         private static void CreateTables()
         {
             Assembly asmbly = Assembly.GetExecutingAssembly();
-            List<Type> typeList = asmbly.GetTypes().Where(t => t.GetCustomAttributes(typeof(TableAttribute), false).Length > 0).ToList();
+            List<Type> typeList = asmbly.GetTypes().Where(t => t.GetCustomAttributes(typeof(Models.TableAttribute), false).Length > 0).ToList();
             foreach (var temp in typeList)
             {
                 CreateTable(temp);
@@ -48,7 +48,17 @@ namespace EnglishPhrases.Other
             string request = "(";
             for (int i = 0; i < propertyInfo.Length; i++)
             {
-                var temp = propertyInfo[i].CustomAttributes;
+                //CREATE TABLE books(
+                //            Id INTEGER PRIMARY KEY,
+                //            title TEXT NOT NULL,
+                //            count_page INTEGER NOT NULL,
+                //            price REAL,
+                //            auth_id INTEGER NOT NULL,
+                //            FOREIGN KEY(auth_id) REFERENCES auth(id)
+                //            );
+
+                var primary = propertyInfo[i].GetCustomAttributes(typeof(Models.PrimaryKeyAttribute), false);// (propertyInfo[i]); // .CustomAttributes.Where(x => x is (CustomAttributeData)Models.PrimaryKeyAttribute).ToList();
+                //var notNull = 
                 if (propertyInfo[i].Name == "ID")
                     request += "id INTEGER PRIMARY KEY";
                 else

@@ -14,5 +14,13 @@ namespace EnglishPhrases
     public partial class App : Application
     {
         public static string PathToDB = @"Phrases.db";
+
+        protected override void OnStartup(StartupEventArgs e)
+        {
+            base.OnStartup(e);
+            Other.DB.Init();
+            Views.MainWindowV mw = new Views.MainWindowV();
+            mw.Show();
+        }
     }
 }
