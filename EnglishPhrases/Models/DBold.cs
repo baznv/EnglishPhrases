@@ -10,37 +10,37 @@ using System.Windows;
 
 namespace EnglishPhrases
 {
-    public static class DB
+    public static class DBold
     {
-        private static string fullPathToDB;
-        private static string stringConnection;
+        //private static string fullPathToDB;
+        //private static string stringConnection;
 
-        public static void Init()
-        {
-            string dir = AppDomain.CurrentDomain.BaseDirectory;
-            fullPathToDB = Path.Combine(dir, App.PathToDB);
-            if (!File.Exists(fullPathToDB))
-            {
-                SQLiteConnection.CreateFile(fullPathToDB);
-                if (File.Exists(fullPathToDB))
-                {
-                    //stringConnection = $"Data Source={fullPathToDB}; Version=3;";
-                    CreateTables();
-                }
-                else MessageBox.Show("Возникла ошибка при создании базы данных");
-            }
-            stringConnection = $"Data Source={fullPathToDB}; Version=3;";
-        }
+        //public static void Init()
+        //{
+        //    string dir = AppDomain.CurrentDomain.BaseDirectory;
+        //    fullPathToDB = Path.Combine(dir, App.PathToDB);
+        //    if (!File.Exists(fullPathToDB))
+        //    {
+        //        SQLiteConnection.CreateFile(fullPathToDB);
+        //        if (File.Exists(fullPathToDB))
+        //        {
+        //            //stringConnection = $"Data Source={fullPathToDB}; Version=3;";
+        //            CreateTables();
+        //        }
+        //        else MessageBox.Show("Возникла ошибка при создании базы данных");
+        //    }
+        //    stringConnection = $"Data Source={fullPathToDB}; Version=3;";
+        //}
 
-        private static void CreateTables()
-        {
-            Assembly asmbly = Assembly.GetExecutingAssembly();
-            List<Type> typeList = asmbly.GetTypes().Where(t => t.GetCustomAttributes(typeof(DataAttribute), true).Length > 0).ToList();
-            foreach (var temp in typeList)
-            {
-                CreateTable(temp);
-            }
-        }
+        //private static void CreateTables()
+        //{
+        //    Assembly asmbly = Assembly.GetExecutingAssembly();
+        //    List<Type> typeList = asmbly.GetTypes().Where(t => t.GetCustomAttributes(typeof(DataAttribute), true).Length > 0).ToList();
+        //    foreach (var temp in typeList)
+        //    {
+        //        CreateTable(temp);
+        //    }
+        //}
 
         private static void CreateTable(Type type)
         {
@@ -69,18 +69,13 @@ namespace EnglishPhrases
             }
             request += ");";
 
-            using (SQLiteConnection conn = new SQLiteConnection($"Data Source={fullPathToDB}; Version=3;"))
-            {
-                SQLiteCommand command = new SQLiteCommand(titleRequest + request, conn);
-                conn.Open();
-                command.ExecuteNonQuery();
-                conn.Close();
-            }
-        }
-
-        public static void SaveWord(EnglishWords englishWords)
-        {
-            InsertRow(englishWords);
+            //using (SQLiteConnection conn = new SQLiteConnection($"Data Source={fullPathToDB}; Version=3;"))
+            //{
+            //    SQLiteCommand command = new SQLiteCommand(titleRequest + request, conn);
+            //    conn.Open();
+            //    command.ExecuteNonQuery();
+            //    conn.Close();
+            //}
         }
 
         private static void InsertRow<T>(T obj)
@@ -92,25 +87,25 @@ namespace EnglishPhrases
 
             int id;
 
-            using (SQLiteConnection conn = new SQLiteConnection(stringConnection))
-            {
-                SQLiteCommand command = new SQLiteCommand(conn);
-                command.CommandText = comm;
+            //using (SQLiteConnection conn = new SQLiteConnection(stringConnection))
+            //{
+            //    SQLiteCommand command = new SQLiteCommand(conn);
+            //    command.CommandText = comm;
 
-                for (int i = 0; i < fields.Count; i++)
-                {
-                    PropertyInfo fi = type.GetProperty(fields[i]);
-                    command.Parameters.AddWithValue(fields[i], fi.GetValue(obj));
-                }
+            //    for (int i = 0; i < fields.Count; i++)
+            //    {
+            //        PropertyInfo fi = type.GetProperty(fields[i]);
+            //        command.Parameters.AddWithValue(fields[i], fi.GetValue(obj));
+            //    }
 
-                conn.Open();
-                //command.ExecuteNonQuery();
-                id = int.Parse(command.ExecuteScalar().ToString());
-                PropertyInfo fi_id = type.GetProperty("ID");
-                fi_id.SetValue(obj, id);
+            //    conn.Open();
+            //    //command.ExecuteNonQuery();
+            //    id = int.Parse(command.ExecuteScalar().ToString());
+            //    PropertyInfo fi_id = type.GetProperty("ID");
+            //    fi_id.SetValue(obj, id);
 
-                conn.Close();
-            }
+            //    conn.Close();
+            //}
         }
 
         private static List<string> GetNameProperties(Type type)

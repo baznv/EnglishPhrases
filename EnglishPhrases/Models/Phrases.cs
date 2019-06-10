@@ -6,50 +6,58 @@ using System.Threading.Tasks;
 
 namespace EnglishPhrases
 {
-        [Data]
-        public class EnglishWords
-        {
-            public int ID { get; set; }
-            public string Word { get; set; }
-            public string Transcription { get; set; }
-        }
-        [Data]
+        [Table]
         public class EnglishSentence
         {
+            [PrimaryKey]
             public int ID { get; set; }
-            //public EnglishWords[] words { get; private set; }
             public string Sentense { get; set; }
-            //private string sentense;
-            //public string Sentense
-            //{
-            //    get {
-            //        return string.Join(" ", words.Select(x => x.Word));
-            //    }
-            //    set {
-            //        sentense = value;
-            //    }
-            //}
+            //public ?? Sound {get; set;} 
         }
-        [Data]
+        [Table]
         public class RussianSentence
         {
+            [PrimaryKey]
             public int ID { get; set; }
             public string Sentense { get; set; }
         }
-        [Data]
+        [Table]
         public class Relation
         {
+            [PrimaryKey]
             public int ID { get; set; }
+            [ForeignKey(typeof(EnglishSentence))]
             public int ID_EnglishSentence { get; set; }
+            [ForeignKey(typeof(RussianSentence))]
             public int ID_RussianSentence { get; set; }
-
+            public string DateAdd { get; set; }
+            //public int CountShow { get; set; }
         }
 
+    //Для указания атрибутов у класса для данных (создание DB), чтобы вручную не перебирать
     [AttributeUsage(AttributeTargets.Class)]
-    class DataAttribute : Attribute
+    public class TableAttribute : Attribute
     {
-        //Для указания атрибутов у класса для данных (создание DB), чтобы вручную не перебирать
-        public DataAttribute()
-        { }
+        public TableAttribute() { }
     }
+
+    [AttributeUsage(AttributeTargets.Property)]
+    public class PrimaryKeyAttribute : Attribute
+    {
+        public PrimaryKeyAttribute() { }
+    }
+
+
+    [AttributeUsage(AttributeTargets.Property)]
+    public class ForeignKeyAttribute : Attribute
+    {
+        private Type type;
+
+        public ForeignKeyAttribute(Type type)
+        {
+            this.type = type;
+        }
+    }
+
+
 }
