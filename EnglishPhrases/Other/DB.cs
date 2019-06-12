@@ -44,39 +44,44 @@ namespace EnglishPhrases.Other
         private static void CreateTable(Type type)
         {
             PropertyInfo[] propertyInfo = type.GetProperties();
-            string titleRequest = $"CREATE TABLE IF NOT EXISTS {type.Name} ";
+            string titleRequest = $"CREATE TABLE IF NOT EXISTS {type.Name.ToLower()} ";
             string request = "(";
+            string foreignText = "";
+
             for (int i = 0; i < propertyInfo.Length; i++)
             {
-                //CREATE TABLE books(
-                //            Id INTEGER PRIMARY KEY,
-                //            title TEXT NOT NULL,
-                //            count_page INTEGER NOT NULL,
-                //            price REAL,
-                //            auth_id INTEGER NOT NULL,
-                //            FOREIGN KEY(auth_id) REFERENCES auth(id)
-                //            );
+                var primary = propertyInfo[i].GetCustomAttributes(typeof(Models.PrimaryKeyAttribute), false).SingleOrDefault() as Models.PrimaryKeyAttribute;
+                var notNull = propertyInfo[i].GetCustomAttributes(typeof(Models.NotNullAttribute), false).SingleOrDefault() as Models.NotNullAttribute;
 
-                var primary = propertyInfo[i].GetCustomAttributes(typeof(Models.PrimaryKeyAttribute), false);// (propertyInfo[i]); // .CustomAttributes.Where(x => x is (CustomAttributeData)Models.PrimaryKeyAttribute).ToList();
-                //var notNull = 
-                if (propertyInfo[i].Name == "ID")
-                    request += "id INTEGER PRIMARY KEY";
-                else
+                //будет или primaryKey или notNull
+                string constraint = "";
+                if (!(primary == null))
+                    constraint = primary.Text;
+                else if (!(notNull == null))
+                    constraint = notNull.Text;
+
+                switch (propertyInfo[i].PropertyType.Name)
                 {
-                    switch (propertyInfo[i].PropertyType.Name)
-                    {
-                        case "String":
-                            request += $", {propertyInfo[i].Name.ToLower()} TEXT";
-                            break;
-                        case "Int32":
-                            request += $", {propertyInfo[i].Name.ToLower()} INTEGER";
-                            break;
-                        default:
-                            request += $", {propertyInfo[i].Name.ToLower()} TEXT";
-                            break;
-                    }
+                    case "String":
+                        request += request.Length == 1 ? "" : ", ";
+                        request += $"{propertyInfo[i].Name.ToLower()} TEXT {constraint}";
+                        break;
+                    case "Boolean":
+                    case "Int32":
+                        request += request.Length == 1 ? "" : ", ";
+                        request += $"{propertyInfo[i].Name.ToLower()} INTEGER {constraint}";
+                        break;
+                    //default:
+                    //    request += $", {propertyInfo[i].Name.ToLower()} TEXT {constraint}";
+                    //    break;
                 }
+
+                var foreign = propertyInfo[i].GetCustomAttributes(typeof(Models.ForeignKeyAttribute), false).SingleOrDefault() as Models.ForeignKeyAttribute;
+
+                if (!(foreign == null))
+                    foreignText += $", {foreign.Text}({propertyInfo[i].Name.ToLower()}) REFERENCES {foreign.type.Name.ToLower()}(id)";
             }
+            request += foreignText;
             request += ");";
 
             using (SQLiteConnection conn = new SQLiteConnection($"Data Source={fullPathToDB}; Version=3;"))

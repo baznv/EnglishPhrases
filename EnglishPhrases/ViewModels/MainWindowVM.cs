@@ -49,7 +49,7 @@ namespace EnglishPhrases.ViewModels
             {
                 if (changePageCommand == null)
                 {
-                    changePageCommand = new Commands.RelayCommand(
+                    changePageCommand = new Other.RelayCommand(
                         p => ChangeViewModel((IPageViewModel)p),
                         p => p is IPageViewModel);
                 }

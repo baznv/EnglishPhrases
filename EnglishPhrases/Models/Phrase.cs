@@ -29,6 +29,11 @@ namespace EnglishPhrases.Models
             Sentense = sentense;
             PathToSound = pathToSound;
         }
+
+        internal static void Save(EnglishSentence currentEnglish)
+        {
+            throw new NotImplementedException();
+        }
     }
     [Table]
     public class RussianSentence
@@ -43,6 +48,10 @@ namespace EnglishPhrases.Models
             Sentense = sentense;
         }
 
+        internal static void Save(RussianSentence currentRussian)
+        {
+            throw new NotImplementedException();
+        }
     }
     [Table]
     public class Relation
@@ -56,7 +65,12 @@ namespace EnglishPhrases.Models
         [NotNull]
         public string DateAdd { get; set; }
         public int CountShow { get; set; } //количество показов (статистика)
-        public bool Show { get; set; } //показывать или нет на тренировке
+        public bool Show { get; set; } //показывать или нет на тренировке 0-false 1-true
+
+        internal static void Save(Relation relation)
+        {
+            throw new NotImplementedException();
+        }
 
         public Relation()
         {
@@ -73,19 +87,23 @@ namespace EnglishPhrases.Models
     [AttributeUsage(AttributeTargets.Property)]
     public class PrimaryKeyAttribute : Attribute
     {
-        public PrimaryKeyAttribute() { }
+        public string Text { get; } = "PRIMARY KEY";
+        //public PrimaryKeyAttribute() { }
     }
 
     [AttributeUsage(AttributeTargets.Property)]
     public class NotNullAttribute : Attribute
     {
+        public string Text { get; } = "NOT NULL";
+
         public NotNullAttribute() { }
     }
 
     [AttributeUsage(AttributeTargets.Property)]
     public class ForeignKeyAttribute : Attribute
     {
-        private Type type;
+        public Type type { get; private set; }
+        public string Text { get; } = "FOREIGN KEY";
 
         public ForeignKeyAttribute(Type type)
         {

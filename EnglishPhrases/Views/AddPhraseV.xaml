@@ -9,8 +9,12 @@
     <StackPanel Margin="15" HorizontalAlignment="Stretch">
         <Label Content="English"/>
         <TextBox HorizontalAlignment="Stretch" Height="auto" MinHeight="60" TextWrapping="Wrap" AcceptsReturn="True" Margin="15"/>
+        <StackPanel Orientation="Horizontal">
+            <Button Content="Path" Margin="15,0"/>
+            <TextBlock Text="path to file" Margin="15,0"/>
+        </StackPanel>
         <Label Content="Russian"/>
         <TextBox HorizontalAlignment="Stretch" Height="auto" MinHeight="60" TextWrapping="Wrap" AcceptsReturn="True" Margin="15"/>
-        <Button Content="Add Phrase" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="30" Margin="15" Height="60"/>
+        <Button Content="Add Phrase" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="30" Margin="15" Height="60" Command="{Binding AddPhraseCommand}"/>
     </StackPanel>
 </UserControl>
