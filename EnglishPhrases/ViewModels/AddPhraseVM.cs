@@ -96,7 +96,8 @@ namespace EnglishPhrases.ViewModels
                 Show = true,
                 CountShow = 0
             });
-
+            CurrentEnglish = new Models.EnglishSentence();
+            CurrentRussian = new Models.RussianSentence();
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

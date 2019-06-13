@@ -17,6 +17,6 @@ namespace EnglishPhrases.ViewModels
             }
         }
 
-        private ObservableCollection<> listValue;
+        //private ObservableCollection<> listValue;
     }
 }
