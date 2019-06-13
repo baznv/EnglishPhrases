@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -19,7 +20,7 @@ namespace EnglishPhrases.ViewModels
             }
         }
 
-        private Models.EnglishSentence currentEnglish;
+        private Models.EnglishSentence currentEnglish = new Models.EnglishSentence();
         public Models.EnglishSentence CurrentEnglish
         {
             get { return currentEnglish; }
@@ -30,7 +31,7 @@ namespace EnglishPhrases.ViewModels
             }
         }
 
-        private Models.RussianSentence currentRussian;
+        private Models.RussianSentence currentRussian = new Models.RussianSentence();
         public Models.RussianSentence CurrentRussian
         {
             get { return currentRussian; }
@@ -48,18 +49,46 @@ namespace EnglishPhrases.ViewModels
             {
                 return addPhraseCommand ??
                     (
-                    addPhraseCommand = new Other.RelayCommand(
+                    addPhraseCommand = new Commands.RelayCommand(
                         p => SavePhrase(),
-                        p => CurrentEnglish.Sentense != "" && CurrentRussian.Sentense != "")
+                        p =>  !string.IsNullOrEmpty(CurrentEnglish.Sentense) 
+                                && !string.IsNullOrEmpty(CurrentRussian.Sentense)
+                       )
                     );
             }
+        }
+
+        private ICommand savePathCommand;
+        public ICommand SavePathCommand
+        {
+            get
+            {
+                return savePathCommand ??
+                    (
+                    savePathCommand = new Commands.RelayCommand(
+                        p => SavePath(),
+                        p => !string.IsNullOrEmpty(CurrentEnglish.Sentense)
+                       )
+                    );
+            }
+        }
+
+        private void SavePath()
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            if (openFileDialog.ShowDialog() == true)
+            {
+                CurrentEnglish.PathToSound = openFileDialog.FileName;
+                //return true;
+            }
+            //return false;
         }
 
         public void SavePhrase()
         {
             Models.EnglishSentence.Save(CurrentEnglish);
             Models.RussianSentence.Save(CurrentRussian);
-            Models.Relation.Save(new Models.Relation()
+            Models.Phrase.Save(new Models.Phrase()
             {
                 ID_EnglishSentence = CurrentEnglish.ID,
                 ID_RussianSentence = CurrentRussian.ID,

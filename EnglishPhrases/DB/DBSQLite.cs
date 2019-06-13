@@ -8,9 +8,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace EnglishPhrases.Other
+namespace EnglishPhrases.DB
 {
-    public class DB
+    public class DBSqlite
     {
         private static string fullPathToDB;
         private static string stringConnection;
@@ -91,6 +91,72 @@ namespace EnglishPhrases.Other
                 command.ExecuteNonQuery();
                 conn.Close();
             }
+        }
+
+        public static void InsertRow<T>(T obj)
+        {
+            Type type = typeof(T);
+            List<string> fields = GetNameProperties(type);
+            string comm = GetRowINSERT<T>(type, fields);
+            comm += "SELECT last_insert_rowid();";
+
+            int id;
+
+            using (SQLiteConnection conn = new SQLiteConnection(stringConnection))
+            {
+                SQLiteCommand command = new SQLiteCommand(conn);
+                command.CommandText = comm;
+
+                for (int i = 0; i < fields.Count; i++)
+                {
+                    PropertyInfo fi = type.GetProperty(fields[i]);
+                    command.Parameters.AddWithValue(fields[i], fi.GetValue(obj));
+                }
+
+                conn.Open();
+                //command.ExecuteNonQuery();
+                id = int.Parse(command.ExecuteScalar().ToString());
+                PropertyInfo fi_id = type.GetProperty("ID");
+                fi_id.SetValue(obj, id);
+
+                conn.Close();
+            }
+        }
+
+        private static List<string> GetNameProperties(Type type)
+        {
+            List<string> fields = new List<string>();
+            PropertyInfo[] propertyInfo = type.GetProperties();
+            foreach (var prop in propertyInfo)
+            {
+                if (prop.Name == "ID") continue;
+                else fields.Add(prop.Name);
+            }
+            return fields;
+        }
+
+        private static string GetRowINSERT<T>(Type type, List<string> fields)
+        {
+            string comm = $"INSERT INTO {type.Name} (";
+
+            for (int i = 0; i < fields.Count; i++)
+            {
+                if (i != 0)
+                    comm += ", ";
+                comm += $"{fields[i]}";
+            }
+
+            comm += ") VALUES (";
+
+            for (int i = 0; i < fields.Count; i++)
+            {
+                if (i != 0)
+                    comm += ", ";
+                comm += $"@{fields[i]}";
+            }
+
+            comm += ");";
+            return comm;
         }
 
 

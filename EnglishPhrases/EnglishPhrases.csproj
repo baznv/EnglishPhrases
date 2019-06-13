@@ -74,8 +74,8 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Models\Phrase.cs" />
-    <Compile Include="Other\DB.cs" />
-    <Compile Include="Other\RelayCommand.cs" />
+    <Compile Include="DB\DBSQLite.cs" />
+    <Compile Include="Commands\RelayCommand.cs" />
     <Compile Include="ViewModels\IPageViewModel.cs" />
     <Compile Include="ViewModels\AddPhraseVM.cs" />
     <Compile Include="ViewModels\MainWindowVM.cs" />
@@ -90,7 +90,6 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Models\DBold.cs" />
     <Compile Include="Future\Transcript.cs" />
     <Compile Include="Views\ShowAllPhrasesV.xaml.cs">
       <DependentUpon>ShowAllPhrasesV.xaml</DependentUpon>

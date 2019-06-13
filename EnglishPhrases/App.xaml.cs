@@ -18,7 +18,7 @@ namespace EnglishPhrases
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
-            Other.DB.Init();
+            DB.DBSqlite.Init();
             Views.MainWindowV mw = new Views.MainWindowV();
             mw.Show();
         }
