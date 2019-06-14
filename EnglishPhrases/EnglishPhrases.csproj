@@ -73,6 +73,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="DB\DBTable.cs" />
     <Compile Include="Models\Phrase.cs" />
     <Compile Include="DB\DBSQLite.cs" />
     <Compile Include="Commands\RelayCommand.cs" />
