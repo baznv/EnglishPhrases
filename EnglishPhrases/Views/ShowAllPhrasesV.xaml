@@ -7,6 +7,7 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
-        <DataGrid />
+            <DataGrid AutoGenerateColumns="True" ItemsSource="{Binding ListPhrases}" ColumnWidth="auto" CanUserAddRows="false" HorizontalAlignment="Center"
+                      VerticalScrollBarVisibility="Auto"/>
     </Grid>
 </UserControl>

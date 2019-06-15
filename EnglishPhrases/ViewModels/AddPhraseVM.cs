@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -20,24 +21,13 @@ namespace EnglishPhrases.ViewModels
             }
         }
 
-        private Models.EnglishSentence currentEnglish = new Models.EnglishSentence();
-        public Models.EnglishSentence CurrentEnglish
+        private Models.Phrase currentPhrase;
+        public Models.Phrase CurrentPhrase
         {
-            get { return currentEnglish; }
+            get { return currentPhrase; }
             set
             {
-                currentEnglish = value;
-                OnPropertyChanged();
-            }
-        }
-
-        private Models.RussianSentence currentRussian = new Models.RussianSentence();
-        public Models.RussianSentence CurrentRussian
-        {
-            get { return currentRussian; }
-            set
-            {
-                currentRussian = value;
+                currentPhrase = value;
                 OnPropertyChanged();
             }
         }
@@ -51,8 +41,8 @@ namespace EnglishPhrases.ViewModels
                     (
                     addPhraseCommand = new Commands.RelayCommand(
                         p => SavePhrase(),
-                        p =>  !string.IsNullOrEmpty(CurrentEnglish.Sentense) 
-                                && !string.IsNullOrEmpty(CurrentRussian.Sentense)
+                        p =>  !string.IsNullOrEmpty(CurrentPhrase.EnglishPhrase) 
+                                && !string.IsNullOrEmpty(CurrentPhrase.RussianPhrase)
                        )
                     );
             }
@@ -67,7 +57,7 @@ namespace EnglishPhrases.ViewModels
                     (
                     savePathCommand = new Commands.RelayCommand(
                         p => SavePath(),
-                        p => !string.IsNullOrEmpty(CurrentEnglish.Sentense)
+                        p => !string.IsNullOrEmpty(CurrentPhrase.EnglishPhrase)
                        )
                     );
             }
@@ -78,32 +68,26 @@ namespace EnglishPhrases.ViewModels
             OpenFileDialog openFileDialog = new OpenFileDialog();
             if (openFileDialog.ShowDialog() == true)
             {
-                CurrentEnglish.PathToSound = openFileDialog.FileName;
-                //return true;
+                //if (Path.GetDirectoryName(openFileDialog.FileName).Equals(App.PathToSounds))
+                    CurrentPhrase.PathToSound = openFileDialog.SafeFileName;
             }
-            //return false;
         }
 
         public void SavePhrase()
         {
-            Models.EnglishSentence.Save(CurrentEnglish);
-            Models.RussianSentence.Save(CurrentRussian);
-            Models.Phrase.Save(new Models.Phrase()
-            {
-                ID_EnglishSentence = CurrentEnglish.ID,
-                ID_RussianSentence = CurrentRussian.ID,
-                DateAdd = DateTime.Now.ToString("yyyy.MM.dd"),
-                Show = true,
-                CountShow = 0
-            });
-            CurrentEnglish = new Models.EnglishSentence();
-            CurrentRussian = new Models.RussianSentence();
+            CurrentPhrase.Save();
+            CurrentPhrase = new Models.Phrase();
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
         public void OnPropertyChanged([CallerMemberName]string prop = "")
         {
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
+        }
+
+        public void Init()
+        {
+            CurrentPhrase = new Models.Phrase();
         }
     }
 }

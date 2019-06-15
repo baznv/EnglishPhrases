@@ -63,6 +63,8 @@ namespace EnglishPhrases.ViewModels
             // Add available pages
             PageViewModels.Add(new AddPhraseVM());
             PageViewModels.Add(new ShowAllPhrasesVM());
+            PageViewModels.Add(new SettingsVM());
+
             // Set starting page
             //CurrentPageViewModel = PageViewModels[0];
         }
@@ -74,6 +76,8 @@ namespace EnglishPhrases.ViewModels
 
             CurrentPageViewModel = PageViewModels
                 .FirstOrDefault(vm => vm == viewModel);
+
+            CurrentPageViewModel.Init();
         }
 
 

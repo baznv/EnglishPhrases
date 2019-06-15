@@ -14,10 +14,14 @@
         <DataTemplate DataType="{x:Type vm:ShowAllPhrasesVM}">
             <local:ShowAllPhrasesV />
         </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:SettingsVM}">
+            <local:SettingsV />
+        </DataTemplate>
+
     </Window.Resources>
 
-    <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="5">
-        <Border BorderBrush="Black" BorderThickness="0,0,0,1">
+    <DockPanel HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="5" LastChildFill="True">
+        <Border BorderBrush="Black" BorderThickness="0,0,0,1" DockPanel.Dock="Top">
             <ItemsControl ItemsSource="{Binding PageViewModels}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
@@ -29,12 +33,12 @@
                 </ItemsControl.ItemTemplate>
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
-                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center"/>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" DockPanel.Dock="Top"/>
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
         </ItemsControl>
         </Border>
         
-        <ContentControl Content="{Binding CurrentPageViewModel}" />
-    </StackPanel>
+        <ContentControl Content="{Binding CurrentPageViewModel}" DockPanel.Dock="Bottom"/>
+    </DockPanel>
 </Window>

@@ -73,13 +73,14 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="DB\DBTable.cs" />
     <Compile Include="Models\Phrase.cs" />
-    <Compile Include="DB\DBSQLite.cs" />
+    <Compile Include="DataBase\DB.cs" />
     <Compile Include="Commands\RelayCommand.cs" />
+    <Compile Include="Models\Setting.cs" />
     <Compile Include="ViewModels\IPageViewModel.cs" />
     <Compile Include="ViewModels\AddPhraseVM.cs" />
     <Compile Include="ViewModels\MainWindowVM.cs" />
+    <Compile Include="ViewModels\SettingsVM.cs" />
     <Compile Include="ViewModels\ShowAllPhrasesVM.cs" />
     <Compile Include="Views\AddPhraseV.xaml.cs">
       <DependentUpon>AddPhraseV.xaml</DependentUpon>
@@ -92,6 +93,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Future\Transcript.cs" />
+    <Compile Include="Views\SettingsV.xaml.cs">
+      <DependentUpon>SettingsV.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\ShowAllPhrasesV.xaml.cs">
       <DependentUpon>ShowAllPhrasesV.xaml</DependentUpon>
     </Compile>
@@ -104,6 +108,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\MainWindowV.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\SettingsV.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

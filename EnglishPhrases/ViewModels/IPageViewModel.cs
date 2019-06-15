@@ -9,5 +9,6 @@ namespace EnglishPhrases.ViewModels
     public interface IPageViewModel
     {
         string Name { get; }
+        void Init();
     }
 }

@@ -10,20 +10,20 @@
         <Label Content="English"/>
         <Border BorderThickness="1" BorderBrush="#8E826C" Margin="15" CornerRadius="4" Background="White">
             <TextBox HorizontalAlignment="Stretch" Height="auto" MinHeight="60" TextWrapping="Wrap" AcceptsReturn="True" Background="Transparent"
-                 Text="{Binding Path=CurrentEnglish.Sentense, UpdateSourceTrigger=PropertyChanged}"/>
+                 Text="{Binding Path=CurrentPhrase.EnglishPhrase, UpdateSourceTrigger=PropertyChanged}"/>
         </Border>
         <StackPanel Orientation="Horizontal">
             <Button Content="Path" Margin="15,0" Command="{Binding SavePathCommand}" Background="#8A795A"/>
-            <TextBlock Text="{Binding CurrentEnglish.PathToSound}" Margin="15,0"/>
+            <TextBlock Text="{Binding CurrentPhrase.PathToSound}" Margin="15,0"/>
         </StackPanel>
         <Label Content="Russian"/>
         <Border BorderThickness="1" BorderBrush="#8E826C" Margin="15" CornerRadius="4" Background="White">
             <TextBox HorizontalAlignment="Stretch" Height="auto" MinHeight="60" TextWrapping="Wrap" AcceptsReturn="True" 
-                 Text="{Binding Path=CurrentRussian.Sentense, UpdateSourceTrigger=PropertyChanged}"/>
+                 Text="{Binding Path=CurrentPhrase.RussianPhrase, UpdateSourceTrigger=PropertyChanged}"/>
         </Border>
         <Button Content="Add Phrase" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="30" Margin="15" Height="60" Command="{Binding AddPhraseCommand}" Background="#8A795A"/>
-        <Label Content="{Binding CurrentEnglish.Sentense}"/>
-        <Label Content="{Binding CurrentRussian.Sentense}"/>
+        <Label Content="{Binding CurrentPhrase.EnglishPhrase}"/>
+        <Label Content="{Binding CurrentPhrase.RussianPhrase}"/>
 
     </StackPanel>
 </UserControl>

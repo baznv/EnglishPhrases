@@ -17,6 +17,17 @@ namespace EnglishPhrases.ViewModels
             }
         }
 
-        //private ObservableCollection<> listValue;
+        public ObservableCollection<Models.Phrase> ListPhrases { get; set; }
+
+        //public ShowAllPhrasesVM()
+        //{
+        //    ListPhrases = Models.Phrase.GetAllPhrases();
+        //}
+
+        public void Init()
+        {
+            ListPhrases = Models.Phrase.GetAllPhrases();
+        }
+
     }
 }
