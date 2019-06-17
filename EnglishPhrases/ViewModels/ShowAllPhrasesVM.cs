@@ -19,19 +19,20 @@ namespace EnglishPhrases.ViewModels
             }
         }
 
-        private ObservableCollection<Models.Phrase> listPhrases; 
-        public ObservableCollection<Models.Phrase> ListPhrases
-        {
-            get { return listPhrases; }
-            private set
-            {
-                if (value == listPhrases)
-                    return;
+        //private ObservableCollection<Models.Phrase> listPhrases; 
+        //public ObservableCollection<Models.Phrase> ListPhrases
+        //{
+        //    get { return listPhrases; }
+        //    private set
+        //    {
+        //        if (value == listPhrases)
+        //            return;
 
-                listPhrases = value;
-                OnPropertyChanged();
-            }
-        }
+        //        listPhrases = value;
+        //        OnPropertyChanged();
+        //    }
+        //}
+        public ObservableCollection<Models.Phrase> ListPhrases { get; set; }
 
 
 

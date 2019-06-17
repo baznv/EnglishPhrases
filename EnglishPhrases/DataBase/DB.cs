@@ -174,7 +174,9 @@ namespace EnglishPhrases.DataBase
                 SQLiteCommand command = new SQLiteCommand(conn);
                 command.CommandText = $"SELECT id FROM english WHERE sentence = \"{phrase.EnglishPhrase}\"";
                 conn.Open();
-                english.ID = int.Parse(command.ExecuteScalar().ToString());
+                object temp = command.ExecuteScalar();
+                if (!(temp == null))
+                    english.ID = int.Parse(temp.ToString());
                 //using (SQLiteDataReader reader = command.ExecuteReader())
                 //{
                 //    while (reader.Read())
@@ -193,7 +195,9 @@ namespace EnglishPhrases.DataBase
                 SQLiteCommand command = new SQLiteCommand(conn);
                 command.CommandText = $"SELECT id FROM russian WHERE sentence = \"{phrase.RussianPhrase}\"";
                 conn.Open();
-                russian.ID = int.Parse(command.ExecuteScalar().ToString());
+                object temp = command.ExecuteScalar();
+                if (!(temp == null))
+                    russian.ID = int.Parse(temp.ToString());
 
                 //using (SQLiteDataReader reader = command.ExecuteReader())
                 //{
