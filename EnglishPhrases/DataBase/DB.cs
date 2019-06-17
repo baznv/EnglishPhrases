@@ -35,34 +35,6 @@ namespace EnglishPhrases.DataBase
             }
         }
 
-        internal static ObservableCollection<Models.Setting> GetAllSettings()
-        {
-            string comm = "SELECT * FROM setting";
-
-            ObservableCollection<Models.Setting> result = new ObservableCollection<Models.Setting>();
-            using (SQLiteConnection conn = new SQLiteConnection(stringConnection))
-            {
-                SQLiteCommand command = new SQLiteCommand(conn);
-                command.CommandText = comm;
-
-                conn.Open();
-                using (SQLiteDataReader reader = command.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        Models.Setting setting = new Models.Setting();
-                        setting.ID = reader.GetInt32(0);
-                        setting.Name = reader.GetString(1);
-                        setting.ValueSetting = reader.GetString(2);
-
-                        result.Add(setting);
-                    }
-                }
-                conn.Close();
-            }
-            return result;
-        }
-
         private static void CreateTables()
         {
             Assembly asmbly = Assembly.GetExecutingAssembly();
@@ -103,9 +75,9 @@ namespace EnglishPhrases.DataBase
                         request += request.Length == 1 ? "" : ", ";
                         request += $"{propertyInfo[i].Name.ToLower()} INTEGER {constraint}";
                         break;
-                    //default:
-                    //    request += $", {propertyInfo[i].Name.ToLower()} TEXT {constraint}";
-                    //    break;
+                        //default:
+                        //    request += $", {propertyInfo[i].Name.ToLower()} TEXT {constraint}";
+                        //    break;
                 }
 
                 var foreign = propertyInfo[i].GetCustomAttributes(typeof(ForeignKeyAttribute), false).SingleOrDefault() as ForeignKeyAttribute;
@@ -191,23 +163,27 @@ namespace EnglishPhrases.DataBase
             return comm;
         }
 
+
+
+
         public static void SaveToDB(Phrase phrase)
         {
             English english = new English();
             using (SQLiteConnection conn = new SQLiteConnection(stringConnection))
             {
                 SQLiteCommand command = new SQLiteCommand(conn);
-                command.CommandText = $"SELECT * FROM english WHERE sentence = \"{phrase.EnglishPhrase}\"";
+                command.CommandText = $"SELECT id FROM english WHERE sentence = \"{phrase.EnglishPhrase}\"";
                 conn.Open();
-                using (SQLiteDataReader reader = command.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        english.ID = int.Parse(reader["id"].ToString());
-                        english.Sentence = reader["sentence"].ToString();
-                        english.PathToSound = reader["pathToSound"].ToString();
-                    }
-                }
+                english.ID = int.Parse(command.ExecuteScalar().ToString());
+                //using (SQLiteDataReader reader = command.ExecuteReader())
+                //{
+                //    while (reader.Read())
+                //    {
+                //        english.ID = int.Parse(reader["id"].ToString());
+                //        english.Sentence = reader["sentence"].ToString();
+                //        english.PathToSound = reader["pathToSound"].ToString();
+                //    }
+                //}
                 conn.Close();
             }
 
@@ -215,16 +191,18 @@ namespace EnglishPhrases.DataBase
             using (SQLiteConnection conn = new SQLiteConnection(stringConnection))
             {
                 SQLiteCommand command = new SQLiteCommand(conn);
-                command.CommandText = $"SELECT * FROM russian WHERE sentence = \"{phrase.RussianPhrase}\"";
+                command.CommandText = $"SELECT id FROM russian WHERE sentence = \"{phrase.RussianPhrase}\"";
                 conn.Open();
-                using (SQLiteDataReader reader = command.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        russian.ID = int.Parse(reader["id"].ToString());
-                        russian.Sentence = reader["sentence"].ToString();
-                    }
-                }
+                russian.ID = int.Parse(command.ExecuteScalar().ToString());
+
+                //using (SQLiteDataReader reader = command.ExecuteReader())
+                //{
+                //    while (reader.Read())
+                //    {
+                //        russian.ID = int.Parse(reader["id"].ToString());
+                //        russian.Sentence = reader["sentence"].ToString();
+                //    }
+                //}
                 conn.Close();
             }
 
@@ -268,6 +246,92 @@ namespace EnglishPhrases.DataBase
             }
             DB.InsertRow(swt);
         }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        internal static ObservableCollection<Models.Setting> GetAllSettings()
+        {
+            string comm = "SELECT * FROM setting";
+
+            ObservableCollection<Models.Setting> result = new ObservableCollection<Models.Setting>();
+            using (SQLiteConnection conn = new SQLiteConnection(stringConnection))
+            {
+                SQLiteCommand command = new SQLiteCommand(conn);
+                command.CommandText = comm;
+
+                conn.Open();
+                using (SQLiteDataReader reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        Models.Setting setting = new Models.Setting();
+                        setting.ID = reader.GetInt32(0);
+                        setting.Name = reader.GetString(1);
+                        setting.ValueSetting = reader.GetString(2);
+
+                        result.Add(setting);
+                    }
+                }
+                conn.Close();
+            }
+            return result;
+        }
+
+
+        internal static void UpdateInDB(Phrase phrase)
+        {
+            using (SQLiteConnection conn = new SQLiteConnection(stringConnection))
+            {
+                conn.Open();
+
+                using (SQLiteTransaction transaction = conn.BeginTransaction())
+                {
+                    using (SQLiteCommand command = new SQLiteCommand(conn))
+                    {
+                        int id_english = -1;
+                        int id_russian = -1;
+                        command.CommandText = $"SELECT * FROM translate WHERE id = \"{phrase.ID}\"";
+                        using (SQLiteDataReader reader = command.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                id_english = int.Parse(reader["id_english"].ToString());
+                                id_russian = int.Parse(reader["id_russian"].ToString());
+                            }
+                        }
+
+                        command.CommandText = $"UPDATE translate SET show={phrase.Show} WHERE id={phrase.ID};";
+                        command.ExecuteNonQuery();
+
+                        command.CommandText = $"UPDATE english SET sentence=\"{phrase.EnglishPhrase}\" WHERE id={id_english};";
+                        command.ExecuteNonQuery();
+
+                        command.CommandText = $"UPDATE russian SET sentence=\"{phrase.RussianPhrase}\" WHERE id={id_russian};";
+                        command.ExecuteNonQuery();
+                    }
+                }
+
+                conn.Close();
+            }
+        }
+
+
+
+
+
 
         public static ObservableCollection<Phrase> GetAllPhrases()
         {

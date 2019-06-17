@@ -52,6 +52,7 @@ namespace EnglishPhrases.Models
             {
                 russianPhrase = value;
                 OnPropertyChanged();
+                //this.Update();
             }
         }
 
@@ -77,6 +78,18 @@ namespace EnglishPhrases.Models
             }
         }
 
+        private int countRightAnswer; //количество правильных ответов (статистика)
+        public int CountRightAnswer
+        {
+            get { return countRightAnswer; }
+            set
+            {
+                countRightAnswer = value;
+                OnPropertyChanged();
+            }
+        }
+
+
         private bool show; //показывать или нет на тренировке 0-false 1-true
         public bool Show
         {
@@ -94,10 +107,17 @@ namespace EnglishPhrases.Models
             DataBase.DB.SaveToDB(this);
         }
 
+        public void Update()
+        {
+            DataBase.DB.UpdateInDB(this);
+        }
+
+
         public static ObservableCollection<Phrase> GetAllPhrases()
         {
             return DataBase.DB.GetAllPhrases();
         }
+
         public event PropertyChangedEventHandler PropertyChanged;
         public void OnPropertyChanged([CallerMemberName]string prop = "")
         {
