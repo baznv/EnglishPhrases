@@ -44,20 +44,21 @@ namespace EnglishPhrases.ViewModels
 
         private void ListPhrases_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
-            if (e.NewItems != null && e.NewItems.Count > 0)
-            {
-                foreach (INotifyPropertyChanged item in e.NewItems.OfType<INotifyPropertyChanged>())
-                {
-                    item.PropertyChanged += Phrase_PropertyChanged;
-                }
-            }
-            if (e.OldItems != null && e.OldItems.Count > 0)
-            {
-                foreach (INotifyPropertyChanged item in e.OldItems.OfType<INotifyPropertyChanged>())
-                {
-                    item.PropertyChanged -= Phrase_PropertyChanged;
-                }
-            }
+            //для обработки добавления/удаления строк (изменение коллекции)
+            //if (e.NewItems != null && e.NewItems.Count > 0)
+            //{
+            //    foreach (INotifyPropertyChanged item in e.NewItems.OfType<INotifyPropertyChanged>())
+            //    {
+            //        item.PropertyChanged += Phrase_PropertyChanged;
+            //    }
+            //}
+            //if (e.OldItems != null && e.OldItems.Count > 0)
+            //{
+            //    foreach (INotifyPropertyChanged item in e.OldItems.OfType<INotifyPropertyChanged>())
+            //    {
+            //        item.PropertyChanged -= Phrase_PropertyChanged;
+            //    }
+            //}
         }
 
         private void Phrase_PropertyChanged(object sender, PropertyChangedEventArgs e)

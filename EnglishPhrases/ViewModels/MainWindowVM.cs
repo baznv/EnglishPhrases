@@ -61,6 +61,7 @@ namespace EnglishPhrases.ViewModels
         public MainWindowVM()
         {
             // Add available pages
+            PageViewModels.Add(new ExerciseVM());
             PageViewModels.Add(new AddPhraseVM());
             PageViewModels.Add(new ShowAllPhrasesVM());
             PageViewModels.Add(new SettingsVM());

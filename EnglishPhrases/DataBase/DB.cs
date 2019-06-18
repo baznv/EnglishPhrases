@@ -305,6 +305,7 @@ namespace EnglishPhrases.DataBase
                 {
                     using (SQLiteCommand command = new SQLiteCommand(conn))
                     {
+                        command.Transaction = transaction;
                         int id_english = -1;
                         int id_russian = -1;
                         command.CommandText = $"SELECT * FROM translate WHERE id = \"{phrase.ID}\"";
@@ -317,7 +318,7 @@ namespace EnglishPhrases.DataBase
                             }
                         }
 
-                        command.CommandText = $"UPDATE translate SET show={phrase.Show} WHERE id={phrase.ID};";
+                        command.CommandText = $"UPDATE translate SET show={phrase.IsShow} WHERE id={phrase.ID};";
                         command.ExecuteNonQuery();
 
                         command.CommandText = $"UPDATE english SET sentence=\"{phrase.EnglishPhrase}\" WHERE id={id_english};";
@@ -325,6 +326,7 @@ namespace EnglishPhrases.DataBase
 
                         command.CommandText = $"UPDATE russian SET sentence=\"{phrase.RussianPhrase}\" WHERE id={id_russian};";
                         command.ExecuteNonQuery();
+                        transaction.Commit();
                     }
                 }
 
@@ -358,7 +360,7 @@ namespace EnglishPhrases.DataBase
                         phrase.ID = reader.GetInt32(0);
                         phrase.DateAdd = reader.GetString(3);
                         phrase.CountShow = reader.GetInt32(4);
-                        phrase.Show = reader.GetBoolean(5);
+                        phrase.IsShow = reader.GetBoolean(5);
                         phrase.EnglishPhrase = reader.GetString(7);
                         phrase.PathToSound = reader[8].ToString();
                         phrase.RussianPhrase = reader.GetString(10);

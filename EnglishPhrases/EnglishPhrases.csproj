@@ -77,6 +77,7 @@
     <Compile Include="DataBase\DB.cs" />
     <Compile Include="Commands\RelayCommand.cs" />
     <Compile Include="Models\Setting.cs" />
+    <Compile Include="ViewModels\ExerciseVM.cs" />
     <Compile Include="ViewModels\IPageViewModel.cs" />
     <Compile Include="ViewModels\AddPhraseVM.cs" />
     <Compile Include="ViewModels\MainWindowVM.cs" />
@@ -84,6 +85,9 @@
     <Compile Include="ViewModels\ShowAllPhrasesVM.cs" />
     <Compile Include="Views\AddPhraseV.xaml.cs">
       <DependentUpon>AddPhraseV.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ExerciseV.xaml.cs">
+      <DependentUpon>ExerciseV.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\MainWindowV.xaml.cs">
       <DependentUpon>MainWindowV.xaml</DependentUpon>
@@ -104,6 +108,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\AddPhraseV.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ExerciseV.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

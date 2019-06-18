@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace EnglishPhrases.Models
 {
-    public class Phrase : INotifyPropertyChanged
+    public class Phrase : INotifyPropertyChanged, IEditableObject
     {
         private int id;
         public int ID
@@ -52,7 +52,6 @@ namespace EnglishPhrases.Models
             {
                 russianPhrase = value;
                 OnPropertyChanged();
-                //this.Update();
             }
         }
 
@@ -89,14 +88,28 @@ namespace EnglishPhrases.Models
             }
         }
 
-
-        private bool show; //показывать или нет на тренировке 0-false 1-true
-        public bool Show
+        //private string percentRight;
+        public string PercentRight
         {
-            get { return show; }
+            get
+            {
+                if (CountShow != 0)
+                {
+                    int t = (CountRightAnswer / CountShow) * 100;
+                    return $"{t}%";
+                }
+                return null;
+            }
+        }
+
+
+        private bool isShow; //показывать или нет на тренировке 0-false 1-true
+        public bool IsShow
+        {
+            get { return isShow; }
             set
             {
-                show = value;
+                isShow = value;
                 OnPropertyChanged();
             }
         }
@@ -124,5 +137,19 @@ namespace EnglishPhrases.Models
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
         }
 
+        public void BeginEdit()
+        {
+            return;
+        }
+
+        public void EndEdit()
+        {
+            this.Update();
+        }
+
+        public void CancelEdit()
+        {
+            return;
+        }
     }
 }

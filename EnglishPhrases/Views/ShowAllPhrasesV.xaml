@@ -7,12 +7,19 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
-        <DataGrid AutoGenerateColumns="True" ItemsSource="{Binding ListPhrases}" ColumnWidth="auto" HorizontalAlignment="Center" CanUserAddRows="True">
-            <!--<DataGrid.Columns>
-                <DataGridTextColumn Header="First Name" Binding="{Binding ID}"/>
-                <DataGridTextColumn Header="Last Name" Binding="{Binding EnglishPhrase}"/>
-                <DataGridTextColumn Header="Age" Binding="{Binding RussianPhrase}"/>
-            </DataGrid.Columns>-->
+        <DataGrid AutoGenerateColumns="False" ItemsSource="{Binding ListPhrases}" ColumnWidth="auto" HorizontalAlignment="Center" CanUserAddRows="True" RowBackground="#E8E9F0"
+                  AlternatingRowBackground="#FFF9EB">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="ID" Binding="{Binding ID}" IsReadOnly="True" />
+                <DataGridTextColumn Header="English" Binding="{Binding EnglishPhrase}"/>
+                <DataGridTextColumn Header="Sound" Binding="{Binding PathToSound}"/>
+                <DataGridTextColumn Header="Russian" Binding="{Binding RussianPhrase}" />
+                <DataGridTextColumn Header="Date Add" Binding="{Binding DateAdd}" IsReadOnly="True"/>
+                <DataGridTextColumn Header="Count" Binding="{Binding CountShow}" IsReadOnly="True"/>
+                <DataGridTextColumn Header="Right" Binding="{Binding CountRightAnswer}" IsReadOnly="True"/>
+                <DataGridTextColumn Header="Percent Right" Binding="{Binding PercentRight}" IsReadOnly="True"/>
+                <DataGridCheckBoxColumn Header="Show" Binding="{Binding IsShow}"/>
+            </DataGrid.Columns>
         </DataGrid>
     </Grid>
 </UserControl>
