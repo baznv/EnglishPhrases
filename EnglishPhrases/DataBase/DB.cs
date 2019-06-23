@@ -247,6 +247,7 @@ namespace EnglishPhrases.DataBase
                 swt.DateAdd = DateTime.Now.ToString("yyyy.MM.dd");
                 swt.Show = true;
                 swt.CountShow = 0;
+                swt.CountRightAnswer = 0;
             }
             DB.InsertRow(swt);
         }
@@ -408,6 +409,8 @@ namespace EnglishPhrases.DataBase
             public string DateAdd { get; set; }
             public int CountShow { get; set; } //количество показов (статистика)
             public bool Show { get; set; } //показывать или нет на тренировке 0-false 1-true
+            public int CountRightAnswer { get; set; } //количество правильных ответов (статистика)
+
         }
 
         [Table]
