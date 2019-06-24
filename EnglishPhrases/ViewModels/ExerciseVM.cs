@@ -18,6 +18,8 @@ namespace EnglishPhrases.ViewModels
 
         public void Init()
         {
+            DataBase.DB.
+            
             //throw new NotImplementedException();
         }
     }

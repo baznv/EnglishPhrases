@@ -13,6 +13,13 @@
                 <DataGridTextColumn Header="ID" Binding="{Binding ID}" IsReadOnly="True" />
                 <DataGridTextColumn Header="English" Binding="{Binding EnglishPhrase}"/>
                 <DataGridTextColumn Header="Sound" Binding="{Binding PathToSound}"/>
+                <!--<DataGridTemplateColumn Header="Birthday">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <DatePicker SelectedDate="{Binding Birthday}" BorderThickness="0" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>-->
                 <DataGridTextColumn Header="Russian" Binding="{Binding RussianPhrase}" />
                 <DataGridTextColumn Header="Date Add" Binding="{Binding DateAdd}" IsReadOnly="True"/>
                 <DataGridTextColumn Header="Count" Binding="{Binding CountShow}" IsReadOnly="True"/>

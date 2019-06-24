@@ -14,7 +14,6 @@ namespace EnglishPhrases.DataBase
 {
     public class DB
     {
-        //private static string fullPathToDB;
         private static string stringConnection;
 
         public static void Init()
@@ -410,7 +409,6 @@ namespace EnglishPhrases.DataBase
             public int CountShow { get; set; } //количество показов (статистика)
             public bool Show { get; set; } //показывать или нет на тренировке 0-false 1-true
             public int CountRightAnswer { get; set; } //количество правильных ответов (статистика)
-
         }
 
         [Table]
