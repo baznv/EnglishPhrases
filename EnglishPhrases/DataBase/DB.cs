@@ -356,6 +356,20 @@ namespace EnglishPhrases.DataBase
                 {
                     while (reader.Read())
                     {
+                        string str0 = $"{reader.GetName(0)} - {reader.GetValue(0)} \n";
+                        string str1 = $"{reader.GetName(1)} - {reader.GetValue(1)} \n";
+                        string str2 = $"{reader.GetName(2)} - {reader.GetValue(2)} \n";
+                        string str3 = $"{reader.GetName(3)} - {reader.GetValue(3)} \n";
+                        string str4 = $"{reader.GetName(4)} - {reader.GetValue(4)} \n";
+                        string str5 = $"{reader.GetName(5)} - {reader.GetValue(5)} \n";
+                        string str6 = $"{reader.GetName(6)} - {reader.GetValue(6)} \n";
+                        string str7 = $"{reader.GetName(7)} - {reader.GetValue(7)} \n";
+                        string str8 = $"{reader.GetName(8)} - {reader.GetValue(8)} \n";
+                        string str9 = $"{reader.GetName(9)} - {reader.GetValue(9)} \n";
+                        string str10 = $"{reader.GetName(10)} - {reader.GetValue(10)} \n";
+                        string str11 = $"{reader.GetName(11)} - {reader.GetValue(11)} \n";
+
+                        MessageBox.Show($"{str0} {str1} {str2} {str3} {str4} {str5} {str6} {str7} {str8} {str9} {str10} {str11}");
                         Phrase phrase = new Phrase();
                         phrase.ID = reader.GetInt32(0);
                         phrase.DateAdd = reader.GetString(3);
