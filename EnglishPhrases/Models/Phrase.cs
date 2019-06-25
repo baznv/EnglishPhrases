@@ -11,8 +11,8 @@ namespace EnglishPhrases.Models
 {
     public class Phrase : INotifyPropertyChanged, IEditableObject
     {
-        private int id;
-        public int ID
+        private int[] id;
+        public int[] ID
         {
             get { return id; }
             set
@@ -44,6 +44,52 @@ namespace EnglishPhrases.Models
             }
         }
 
+        private int countShowEnglish; //количество показов (статистика)
+        public int CountShowEnglish
+        {
+            get { return countShowEnglish; }
+            set
+            {
+                countShowEnglish = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private int countRightEnglish; //количество правильных ответов (статистика)
+        public int CountRightEnglish
+        {
+            get { return countRightEnglish; }
+            set
+            {
+                countRightEnglish = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public string PercentRightEnglish
+        {
+            get
+            {
+                if (CountShowEnglish != 0)
+                {
+                    int t = (CountRightEnglish / CountShowEnglish) * 100;
+                    return $"{t}%";
+                }
+                return null;
+            }
+        }
+
+        private bool isShowEnglish = true; //показывать или нет на тренировке 0-false 1-true
+        public bool IsShowEnglish
+        {
+            get { return isShowEnglish; }
+            set
+            {
+                isShowEnglish = value;
+                OnPropertyChanged();
+            }
+        }
+
         private string russianPhrase;
         public string RussianPhrase
         {
@@ -51,6 +97,52 @@ namespace EnglishPhrases.Models
             set
             {
                 russianPhrase = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private int countShowRussian; //количество показов (статистика)
+        public int CountShowRussian
+        {
+            get { return countShowRussian; }
+            set
+            {
+                countShowRussian = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private int countRightRussian; //количество правильных ответов (статистика)
+        public int CountRightRussian
+        {
+            get { return countRightRussian; }
+            set
+            {
+                countRightRussian = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public string PercentRightRussian
+        {
+            get
+            {
+                if (CountShowRussian != 0)
+                {
+                    int t = (CountRightRussian / CountShowRussian) * 100;
+                    return $"{t}%";
+                }
+                return null;
+            }
+        }
+
+        private bool isShowRussian = true; //показывать или нет на тренировке 0-false 1-true
+        public bool IsShowRussian
+        {
+            get { return isShowRussian; }
+            set
+            {
+                isShowRussian = value;
                 OnPropertyChanged();
             }
         }
@@ -66,53 +158,6 @@ namespace EnglishPhrases.Models
             }
         }
 
-        private int countShow; //количество показов (статистика)
-        public int CountShow
-        {
-            get { return countShow; }
-            set
-            {
-                countShow = value;
-                OnPropertyChanged();
-            }
-        }
-
-        private int countRightAnswer; //количество правильных ответов (статистика)
-        public int CountRightAnswer
-        {
-            get { return countRightAnswer; }
-            set
-            {
-                countRightAnswer = value;
-                OnPropertyChanged();
-            }
-        }
-
-        //private string percentRight;
-        public string PercentRight
-        {
-            get
-            {
-                if (CountShow != 0)
-                {
-                    int t = (CountRightAnswer / CountShow) * 100;
-                    return $"{t}%";
-                }
-                return null;
-            }
-        }
-
-
-        private bool isShow; //показывать или нет на тренировке 0-false 1-true
-        public bool IsShow
-        {
-            get { return isShow; }
-            set
-            {
-                isShow = value;
-                OnPropertyChanged();
-            }
-        }
 
 
         public void Save()

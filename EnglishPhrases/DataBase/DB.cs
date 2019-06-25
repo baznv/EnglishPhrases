@@ -24,7 +24,6 @@ namespace EnglishPhrases.DataBase
 
             if (!File.Exists(fullPathToDB))
             {
-                Directory.CreateDirectory(Path.GetDirectoryName(fullPathToDB));
                 SQLiteConnection.CreateFile(fullPathToDB);
                 if (File.Exists(fullPathToDB))
                 {
@@ -47,49 +46,41 @@ namespace EnglishPhrases.DataBase
         private static void CreateTable(Type type)
         {
             PropertyInfo[] propertyInfo = type.GetProperties();
-            string titleRequest = $"CREATE TABLE IF NOT EXISTS {type.Name.ToLower()} ";
-            string request = "(";
-            string foreignText = "";
+            string titleRequest = $"CREATE TABLE IF NOT EXISTS {type.Name.ToLower()}";
+            List<string> columns = new List<string>(); //обычные столбцы таблицы
+            List<string> primaryColumns = new List<string>(); //столбцы таблицы с первичным ключом
+            string foreignText = ""; //для столбцов таблицы с внешним ключом
 
             for (int i = 0; i < propertyInfo.Length; i++)
             {
-                var primary = propertyInfo[i].GetCustomAttributes(typeof(PrimaryKeyAttribute), false).SingleOrDefault() as PrimaryKeyAttribute;
+                if (!(propertyInfo[i].GetCustomAttributes(typeof(PrimaryKeyAttribute), false).SingleOrDefault() == null))
+                    primaryColumns.Add(propertyInfo[i].Name.ToLower());
                 var notNull = propertyInfo[i].GetCustomAttributes(typeof(NotNullAttribute), false).SingleOrDefault() as NotNullAttribute;
+                var unique = propertyInfo[i].GetCustomAttributes(typeof(UniqueAttribute), false).SingleOrDefault() as UniqueAttribute;
 
-                //будет или primaryKey или notNull
-                string constraint = "";
-                if (!(primary == null))
-                    constraint = primary.Text;
-                else if (!(notNull == null))
-                    constraint = notNull.Text;
 
                 switch (propertyInfo[i].PropertyType.Name)
                 {
                     case "String":
-                        request += request.Length == 1 ? "" : ", ";
-                        request += $"{propertyInfo[i].Name.ToLower()} TEXT {constraint}";
+                        columns.Add($"{propertyInfo[i].Name.ToLower()} TEXT {unique?.Text} {notNull?.Text}".TrimEnd(' '));
                         break;
                     case "Boolean":
                     case "Int32":
-                        request += request.Length == 1 ? "" : ", ";
-                        request += $"{propertyInfo[i].Name.ToLower()} INTEGER {constraint}";
+                        columns.Add($"{propertyInfo[i].Name.ToLower()} INTEGER {unique?.Text} {notNull?.Text}".TrimEnd(' '));
                         break;
-                        //default:
-                        //    request += $", {propertyInfo[i].Name.ToLower()} TEXT {constraint}";
-                        //    break;
                 }
 
                 var foreign = propertyInfo[i].GetCustomAttributes(typeof(ForeignKeyAttribute), false).SingleOrDefault() as ForeignKeyAttribute;
 
+                //принимаем, что ссылка у foreign key может быть только на столбец id 
                 if (!(foreign == null))
                     foreignText += $", {foreign.Text}({propertyInfo[i].Name.ToLower()}) REFERENCES {foreign.TypeRef.Name.ToLower()}(id)";
             }
-            request += foreignText;
-            request += ");";
+            string request = $"{titleRequest} ({string.Join(", ", columns.ToArray())}{foreignText}, PRIMARY KEY ({string.Join(", ", primaryColumns.ToArray())}));";
 
             using (SQLiteConnection conn = new SQLiteConnection(stringConnection))
             {
-                SQLiteCommand command = new SQLiteCommand(titleRequest + request, conn);
+                SQLiteCommand command = new SQLiteCommand(request, conn);
                 conn.Open();
                 command.ExecuteNonQuery();
                 conn.Close();
@@ -101,12 +92,14 @@ namespace EnglishPhrases.DataBase
             Type type = typeof(T);
             List<string> fields = GetNameProperties(type);
             string comm = GetRowINSERT<T>(type, fields);
-            comm += "SELECT last_insert_rowid();";
+            comm += $"SELECT last_insert_rowid();";
 
             int id;
 
             using (SQLiteConnection conn = new SQLiteConnection(stringConnection))
             {
+                conn.Open();
+
                 SQLiteCommand command = new SQLiteCommand(conn);
                 command.CommandText = comm;
 
@@ -115,12 +108,10 @@ namespace EnglishPhrases.DataBase
                     PropertyInfo fi = type.GetProperty(fields[i]);
                     command.Parameters.AddWithValue(fields[i], fi.GetValue(obj));
                 }
-
-                conn.Open();
-                //command.ExecuteNonQuery();
-                id = int.Parse(command.ExecuteScalar().ToString());
+                var t = command.ExecuteScalar();
+                id = int.Parse(t.ToString());
                 PropertyInfo fi_id = type.GetProperty("ID");
-                fi_id.SetValue(obj, id);
+                fi_id?.SetValue(obj, id);
 
                 conn.Close();
             }
@@ -140,7 +131,7 @@ namespace EnglishPhrases.DataBase
 
         private static string GetRowINSERT<T>(Type type, List<string> fields)
         {
-            string comm = $"INSERT INTO {type.Name} (";
+            string comm = $"INSERT INTO {type.Name.ToLower()} (";
 
             for (int i = 0; i < fields.Count; i++)
             {
@@ -163,105 +154,54 @@ namespace EnglishPhrases.DataBase
         }
 
 
-
-
         public static void SaveToDB(Phrase phrase)
         {
             English english = new English();
+            Russian russian = new Russian();
+            Translate translate = new Translate();
+
             using (SQLiteConnection conn = new SQLiteConnection(stringConnection))
             {
-                SQLiteCommand command = new SQLiteCommand(conn);
-                command.CommandText = $"SELECT id FROM english WHERE sentence = \"{phrase.EnglishPhrase}\"";
                 conn.Open();
+                SQLiteCommand command = new SQLiteCommand(conn);
+
+                command.CommandText = $"SELECT id FROM english WHERE sentenceE = \"{phrase.EnglishPhrase}\"";
                 object temp = command.ExecuteScalar();
                 if (!(temp == null))
                     english.ID = int.Parse(temp.ToString());
-                //using (SQLiteDataReader reader = command.ExecuteReader())
-                //{
-                //    while (reader.Read())
-                //    {
-                //        english.ID = int.Parse(reader["id"].ToString());
-                //        english.Sentence = reader["sentence"].ToString();
-                //        english.PathToSound = reader["pathToSound"].ToString();
-                //    }
-                //}
-                conn.Close();
-            }
 
-            Russian russian = new Russian();
-            using (SQLiteConnection conn = new SQLiteConnection(stringConnection))
-            {
-                SQLiteCommand command = new SQLiteCommand(conn);
-                command.CommandText = $"SELECT id FROM russian WHERE sentence = \"{phrase.RussianPhrase}\"";
-                conn.Open();
-                object temp = command.ExecuteScalar();
+                command.CommandText = $"SELECT id FROM russian WHERE sentenceR = \"{phrase.RussianPhrase}\"";
+                temp = command.ExecuteScalar();
                 if (!(temp == null))
                     russian.ID = int.Parse(temp.ToString());
 
-                //using (SQLiteDataReader reader = command.ExecuteReader())
-                //{
-                //    while (reader.Read())
-                //    {
-                //        russian.ID = int.Parse(reader["id"].ToString());
-                //        russian.Sentence = reader["sentence"].ToString();
-                //    }
-                //}
                 conn.Close();
             }
 
             if (english.ID == 0)
             {
-                english.Sentence = phrase.EnglishPhrase;
-                english.PathToSound = phrase.PathToSound;
+                english.SentenceE = phrase.EnglishPhrase;
+                english.PathToSoundE = phrase.PathToSound;
+                english.ShowE = phrase.IsShowEnglish;
+                english.CountShowE = phrase.CountShowEnglish;
+                english.CountRightE = phrase.CountRightEnglish;
                 InsertRow(english);
             }
 
             if (russian.ID == 0)
             {
-                russian.Sentence = phrase.RussianPhrase;
+                russian.SentenceR = phrase.RussianPhrase;
+                russian.ShowR = phrase.IsShowRussian;
+                russian.CountShowR = phrase.CountShowRussian;
+                russian.CountRightR = phrase.CountRightRussian;
                 InsertRow(russian);
             }
 
-            Translate swt = new Translate();
-
-            using (SQLiteConnection conn = new SQLiteConnection(stringConnection))
-            {
-                SQLiteCommand command = new SQLiteCommand(conn);
-                command.CommandText = $"SELECT id FROM translate WHERE id_english = {english.ID} AND id_russian = {russian.ID}";
-                conn.Open();
-                using (SQLiteDataReader reader = command.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        swt.ID = int.Parse(reader["id"].ToString());
-                    }
-                }
-                conn.Close();
-            }
-
-            if (swt.ID == 0)
-            {
-                swt.ID_English = english.ID;
-                swt.ID_Russian = russian.ID;
-                swt.DateAdd = DateTime.Now.ToString("yyyy.MM.dd");
-                swt.Show = true;
-                swt.CountShow = 0;
-                swt.CountRightAnswer = 0;
-            }
-            DB.InsertRow(swt);
+            translate.ID_English = english.ID;
+            translate.ID_Russian = russian.ID;
+            translate.DateAdd = DateTime.Now.ToString("yyyy.MM.dd");
+            InsertRow(translate);
         }
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -306,25 +246,25 @@ namespace EnglishPhrases.DataBase
                     using (SQLiteCommand command = new SQLiteCommand(conn))
                     {
                         command.Transaction = transaction;
-                        int id_english = -1;
-                        int id_russian = -1;
-                        command.CommandText = $"SELECT * FROM translate WHERE id = \"{phrase.ID}\"";
-                        using (SQLiteDataReader reader = command.ExecuteReader())
-                        {
-                            while (reader.Read())
-                            {
-                                id_english = int.Parse(reader["id_english"].ToString());
-                                id_russian = int.Parse(reader["id_russian"].ToString());
-                            }
-                        }
+                        //int id_english = -1;
+                        //int id_russian = -1;
+                        //command.CommandText = $"SELECT * FROM translate WHERE id = \"{phrase.ID}\"";
+                        //using (SQLiteDataReader reader = command.ExecuteReader())
+                        //{
+                        //    while (reader.Read())
+                        //    {
+                        //        id_english = int.Parse(reader["id_english"].ToString());
+                        //        id_russian = int.Parse(reader["id_russian"].ToString());
+                        //    }
+                        //}
 
-                        command.CommandText = $"UPDATE translate SET show={phrase.IsShow} WHERE id={phrase.ID};";
+                        //command.CommandText = $"UPDATE translate SET show={phrase.IsShow} WHERE id={phrase.ID};";
+                        //command.ExecuteNonQuery();
+
+                        command.CommandText = $"UPDATE english SET sentencee=\"{phrase.EnglishPhrase}\", showe={phrase.IsShowEnglish} WHERE id={phrase.ID[0]};";
                         command.ExecuteNonQuery();
 
-                        command.CommandText = $"UPDATE english SET sentence=\"{phrase.EnglishPhrase}\" WHERE id={id_english};";
-                        command.ExecuteNonQuery();
-
-                        command.CommandText = $"UPDATE russian SET sentence=\"{phrase.RussianPhrase}\" WHERE id={id_russian};";
+                        command.CommandText = $"UPDATE russian SET sentencer=\"{phrase.RussianPhrase}\", showr={phrase.IsShowRussian} WHERE id={phrase.ID[1]};";
                         command.ExecuteNonQuery();
                         transaction.Commit();
                     }
@@ -356,28 +296,35 @@ namespace EnglishPhrases.DataBase
                 {
                     while (reader.Read())
                     {
-                        string str0 = $"{reader.GetName(0)} - {reader.GetValue(0)} \n";
-                        string str1 = $"{reader.GetName(1)} - {reader.GetValue(1)} \n";
-                        string str2 = $"{reader.GetName(2)} - {reader.GetValue(2)} \n";
-                        string str3 = $"{reader.GetName(3)} - {reader.GetValue(3)} \n";
-                        string str4 = $"{reader.GetName(4)} - {reader.GetValue(4)} \n";
-                        string str5 = $"{reader.GetName(5)} - {reader.GetValue(5)} \n";
-                        string str6 = $"{reader.GetName(6)} - {reader.GetValue(6)} \n";
-                        string str7 = $"{reader.GetName(7)} - {reader.GetValue(7)} \n";
-                        string str8 = $"{reader.GetName(8)} - {reader.GetValue(8)} \n";
-                        string str9 = $"{reader.GetName(9)} - {reader.GetValue(9)} \n";
-                        string str10 = $"{reader.GetName(10)} - {reader.GetValue(10)} \n";
-                        string str11 = $"{reader.GetName(11)} - {reader.GetValue(11)} \n";
+                        //string str0 = ""; // $"{reader.GetName(0)} - {reader.GetValue(0)} \n";
+                        //string str1 = ""; // $"{reader.GetName(1)} - {reader.GetValue(1)} \n";
+                        //string str2 = ""; // $"{reader.GetName(2)} - {reader.GetValue(2)} \n";
+                        //string str3 = ""; // $"{reader.GetName(3)} - {reader.GetValue(3)} \n";
+                        //string str4 = ""; // $"{reader.GetName(4)} - {reader.GetValue(4)} \n";
+                        //string str5 = ""; // $"{reader.GetName(5)} - {reader.GetValue(5)} \n";
+                        //string str6 = ""; // $"{reader.GetName(6)} - {reader.GetValue(6)} \n";
+                        //string str7 = ""; // $"{reader.GetName(7)} - {reader.GetValue(7)} \n";
+                        //string str8 = $"{reader.GetName(8)} - {reader.GetValue(8)} \n";
+                        //string str9 = $"{reader.GetName(9)} - {reader.GetValue(9)} \n";
+                        //string str10 = $"{reader.GetName(10)} - {reader.GetValue(10)} \n";
+                        //string str11 = $"{reader.GetName(11)} - {reader.GetValue(11)} \n";
+                        //string str12 = $"{reader.GetName(12)} - {reader.GetValue(12)} \n";
+                        //string str13 = $"{reader.GetName(13)} - {reader.GetValue(13)} \n";
+                        ////string str14 = $"{reader.GetName(14)} - {reader.GetValue(14)} \n";
 
-                        MessageBox.Show($"{str0} {str1} {str2} {str3} {str4} {str5} {str6} {str7} {str8} {str9} {str10} {str11}");
+                        //MessageBox.Show($"{str0} {str1} {str2} {str3} {str4} {str5} {str6} {str7} {str8} {str9} {str10} {str11} {str12} {str13}");
                         Phrase phrase = new Phrase();
-                        phrase.ID = reader.GetInt32(0);
-                        phrase.DateAdd = reader.GetString(3);
-                        phrase.CountShow = reader.GetInt32(4);
-                        phrase.IsShow = reader.GetBoolean(5);
-                        phrase.EnglishPhrase = reader.GetString(7);
-                        phrase.PathToSound = reader[8].ToString();
-                        phrase.RussianPhrase = reader.GetString(10);
+                        phrase.ID = new int[] { Convert.ToInt32(reader["id_english"]), Convert.ToInt32(reader["id_russian"]) };
+                        phrase.DateAdd = reader["dateadd"].ToString();
+                        phrase.EnglishPhrase = reader["sentencee"].ToString();
+                        phrase.PathToSound = reader["pathtosounde"].ToString();
+                        phrase.CountShowEnglish = Convert.ToInt32(reader["countshowe"]);
+                        phrase.IsShowEnglish = Convert.ToBoolean(Convert.ToInt32(reader["showe"]));
+                        phrase.CountRightEnglish = Convert.ToInt32(reader["countrighte"]);
+                        phrase.RussianPhrase = reader["sentencer"].ToString();
+                        phrase.CountShowRussian = Convert.ToInt32(reader["countshowr"]);
+                        phrase.IsShowRussian = Convert.ToBoolean(Convert.ToInt32(reader["showr"]));
+                        phrase.CountRightRussian = Convert.ToInt32(reader["countrightr"]);
 
                         result.Add(phrase);
                     }
@@ -395,9 +342,13 @@ namespace EnglishPhrases.DataBase
         {
             [PrimaryKey]
             public int ID { get; set; }
-            [NotNull]
-            public string Sentence { get; set; }
-            public string PathToSound { get; set; }
+            [Unique, NotNull]
+            public string SentenceE { get; set; }
+            [Unique]
+            public string PathToSoundE { get; set; }
+            public int CountShowE { get; set; } //количество показов (статистика)
+            public bool ShowE { get; set; } //показывать или нет на тренировке 0-false 1-true
+            public int CountRightE { get; set; } //количество правильных ответов (статистика)
         }
 
         [Table]
@@ -405,24 +356,24 @@ namespace EnglishPhrases.DataBase
         {
             [PrimaryKey]
             public int ID { get; set; }
-            [NotNull]
-            public string Sentence { get; set; }
+            [Unique, NotNull]
+            public string SentenceR { get; set; }
+            public int CountShowR { get; set; } //количество показов (статистика)
+            public bool ShowR { get; set; } //показывать или нет на тренировке 0-false 1-true
+            public int CountRightR { get; set; } //количество правильных ответов (статистика)
         }
 
         [Table]
         public class Translate
         {
-            [PrimaryKey]
-            public int ID { get; set; }
-            [ForeignKey(typeof(English)), NotNull]
+            //[PrimaryKey]
+            //public int ID { get; set; }
+            [PrimaryKey, ForeignKey(typeof(English))]
             public int ID_English { get; set; }
-            [ForeignKey(typeof(Russian)), NotNull]
+            [PrimaryKey, ForeignKey(typeof(Russian))]
             public int ID_Russian { get; set; }
             [NotNull]
             public string DateAdd { get; set; }
-            public int CountShow { get; set; } //количество показов (статистика)
-            public bool Show { get; set; } //показывать или нет на тренировке 0-false 1-true
-            public int CountRightAnswer { get; set; } //количество правильных ответов (статистика)
         }
 
         [Table]
@@ -434,29 +385,30 @@ namespace EnglishPhrases.DataBase
             public string Name { get; set; }
             [NotNull]
             public string Value { get; set; }
-
         }
 
         //Для указания атрибутов у класса для данных (создание DB), чтобы вручную не перебирать
         [AttributeUsage(AttributeTargets.Class)]
         public class TableAttribute : Attribute
         {
-            //public TableAttribute() { }
         }
 
         [AttributeUsage(AttributeTargets.Property)]
         public class PrimaryKeyAttribute : Attribute
         {
             public string Text { get; } = "PRIMARY KEY";
-            //public PrimaryKeyAttribute() { }
         }
 
         [AttributeUsage(AttributeTargets.Property)]
         public class NotNullAttribute : Attribute
         {
             public string Text { get; } = "NOT NULL";
+        }
 
-            //public NotNullAttribute() { }
+        [AttributeUsage(AttributeTargets.Property)]
+        public class UniqueAttribute : Attribute
+        {
+            public string Text { get; } = "UNIQUE";
         }
 
         [AttributeUsage(AttributeTargets.Property)]

@@ -15,12 +15,17 @@ namespace EnglishPhrases
     public partial class App : Application
     {
         private static string PathToData = @"DBData";
-        public static string PathToDB = Path.Combine(PathToData, @"Phrases.db");
+        public static string PathToDB = Path.Combine(PathToData, @"DBPhrases.db");
         public static string PathToSounds = Path.Combine(PathToData, "Sounds");
 
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
+            if (!Directory.Exists(PathToData))
+            {
+                Directory.CreateDirectory(PathToData);
+            }
+
             DataBase.DB.Init();
 
             if (!Directory.Exists(PathToSounds))

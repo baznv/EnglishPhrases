@@ -7,26 +7,42 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
-        <DataGrid AutoGenerateColumns="False" ItemsSource="{Binding ListPhrases}" ColumnWidth="auto" HorizontalAlignment="Center" CanUserAddRows="True" RowBackground="#E8E9F0"
+        <DataGrid AutoGenerateColumns="False" ItemsSource="{Binding ListPhrases}" ColumnWidth="auto" HorizontalAlignment="Center" RowBackground="#E8E9F0" CanUserAddRows="False"
                   AlternatingRowBackground="#FFF9EB">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="ID" Binding="{Binding ID}" IsReadOnly="True" />
                 <DataGridTextColumn Header="English" Binding="{Binding EnglishPhrase}"/>
                 <DataGridTextColumn Header="Sound" Binding="{Binding PathToSound}"/>
-                <!--<DataGridTemplateColumn Header="Birthday">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <DatePicker SelectedDate="{Binding Birthday}" BorderThickness="0" />
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>-->
+                <DataGridTextColumn Header="Count" Binding="{Binding CountShowEnglish}" IsReadOnly="True"/>
+                <DataGridTextColumn Header="Right" Binding="{Binding CountRightEnglish}" IsReadOnly="True"/>
+                <DataGridTextColumn Header="% Right" Binding="{Binding PercentRightEnglish}" IsReadOnly="True"/>
+                <DataGridCheckBoxColumn Header="Show" Binding="{Binding IsShowEnglish}"/>
                 <DataGridTextColumn Header="Russian" Binding="{Binding RussianPhrase}" />
+                <DataGridTextColumn Header="Count" Binding="{Binding CountShowRussian}" IsReadOnly="True"/>
+                <DataGridTextColumn Header="Right" Binding="{Binding CountRightRussian}" IsReadOnly="True"/>
+                <DataGridTextColumn Header="% Right" Binding="{Binding PercentRightRussian}" IsReadOnly="True"/>
+                <DataGridCheckBoxColumn Header="Show" Binding="{Binding IsShowRussian}"/>
                 <DataGridTextColumn Header="Date Add" Binding="{Binding DateAdd}" IsReadOnly="True"/>
-                <DataGridTextColumn Header="Count" Binding="{Binding CountShow}" IsReadOnly="True"/>
-                <DataGridTextColumn Header="Right" Binding="{Binding CountRightAnswer}" IsReadOnly="True"/>
-                <DataGridTextColumn Header="Percent Right" Binding="{Binding PercentRight}" IsReadOnly="True"/>
-                <DataGridCheckBoxColumn Header="Show" Binding="{Binding IsShow}"/>
             </DataGrid.Columns>
+            <DataGrid.RowDetailsTemplate>
+                <DataTemplate>
+                    <Border BorderThickness="0" Background="BlanchedAlmond" Padding="10">
+                        <StackPanel Orientation="Vertical">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock FontSize="12" Text="Rus: " VerticalAlignment="Center" />
+                                <TextBlock FontSize="16" Foreground="MidnightBlue" Text="{Binding RussianPhrase}" VerticalAlignment="Center" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock FontSize="12" Text="Phone: " VerticalAlignment="Center" />
+                                <TextBlock FontSize="16" Foreground="MidnightBlue" Text="{Binding PercentRightEnglish}" VerticalAlignment="Center" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock FontSize="12" Text="Sales Person: " VerticalAlignment="Center" />
+                                <TextBlock FontSize="16" Foreground="MidnightBlue" Text="{Binding IsShowRussian}" VerticalAlignment="Center" />
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+                </DataTemplate>
+            </DataGrid.RowDetailsTemplate>
         </DataGrid>
     </Grid>
 </UserControl>
