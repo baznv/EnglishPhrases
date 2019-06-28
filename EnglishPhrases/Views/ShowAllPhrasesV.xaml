@@ -10,12 +10,13 @@
     <UserControl.Resources>
         <vm:PathToSoundConverter x:Key="PathToSoundConverter" />
     </UserControl.Resources>
-    <StackPanel>
-        <!--<MediaElement UnloadedBehavior="Close" LoadedBehavior="Manual" Name="my_media" />-->
+    <Grid>
+        <!--<CheckBox Content="Аналоги" HorizontalAlignment="Center" Margin="10" IsChecked="{Binding Analog}"/>-->
+        <MediaElement UnloadedBehavior="Close" LoadedBehavior="Play" Name="my_media" Source="{Binding UriSound}"/>
         <DataGrid AutoGenerateColumns="False" ItemsSource="{Binding ListPhrases}" ColumnWidth="auto" HorizontalAlignment="Center" RowBackground="#E8E9F0" CanUserAddRows="False"
-                  AlternatingRowBackground="#FFF9EB">
+                  AlternatingRowBackground="#FFF9EB"  RowDetailsVisibilityMode="VisibleWhenSelected" FontSize="14">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="English" Binding="{Binding EnglishPhrase}"/>
+                <DataGridTextColumn Header="English" Binding="{Binding EnglishPhrase}" ElementStyle="{StaticResource WrapTextDataGrid}"/>
                 <DataGridTemplateColumn Header="Sound" >
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
@@ -36,24 +37,41 @@
                                 </Button>
                             </StackPanel>-->
                             <Button Command="{Binding DataContext.SoundCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}"
-                                    CommandParameter="{Binding PathToSound}"/>
+                                    CommandParameter="{Binding PathToSound}">
+                                <Image Source="..\Img\sound24.png" />
+                            </Button>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTextColumn Header="Count" Binding="{Binding CountShowEnglish}" IsReadOnly="True"/>
-                <DataGridTextColumn Header="Right" Binding="{Binding CountRightEnglish}" IsReadOnly="True"/>
-                <DataGridTextColumn Header="% Right" Binding="{Binding PercentRightEnglish}" IsReadOnly="True"/>
-                <DataGridCheckBoxColumn Header="Show" Binding="{Binding IsShowEnglish}"/>
-                <DataGridTextColumn Header="Russian" Binding="{Binding RussianPhrase}" />
-                <DataGridTextColumn Header="Count" Binding="{Binding CountShowRussian}" IsReadOnly="True"/>
-                <DataGridTextColumn Header="Right" Binding="{Binding CountRightRussian}" IsReadOnly="True"/>
-                <DataGridTextColumn Header="% Right" Binding="{Binding PercentRightRussian}" IsReadOnly="True"/>
-                <DataGridCheckBoxColumn Header="Show" Binding="{Binding IsShowRussian}"/>
-                <DataGridTextColumn Header="Date Add" Binding="{Binding DateAdd}" IsReadOnly="True"/>
+                <DataGridTextColumn Header="Count" Binding="{Binding CountShowEnglish}" IsReadOnly="True" ElementStyle="{StaticResource CenterDataDataGrid}"/>
+                <DataGridTextColumn Header="Right" Binding="{Binding CountRightEnglish}" IsReadOnly="True" ElementStyle="{StaticResource CenterDataDataGrid}"/>
+                <DataGridTextColumn Header="% Right" Binding="{Binding PercentRightEnglish}" IsReadOnly="True" ElementStyle="{StaticResource CenterDataDataGrid}"/>
+                <DataGridCheckBoxColumn Header="Show" Binding="{Binding IsShowEnglish}" ElementStyle="{StaticResource CheckBoxDataGrid}"/>
+                <DataGridTextColumn Header="Russian" Binding="{Binding RussianPhrase}" ElementStyle="{StaticResource WrapTextDataGrid}"/>
+                <DataGridTextColumn Header="Count" Binding="{Binding CountShowRussian}" IsReadOnly="True" ElementStyle="{StaticResource CenterDataDataGrid}"/>
+                <DataGridTextColumn Header="Right" Binding="{Binding CountRightRussian}" IsReadOnly="True" ElementStyle="{StaticResource CenterDataDataGrid}"/>
+                <DataGridTextColumn Header="% Right" Binding="{Binding PercentRightRussian}" IsReadOnly="True" ElementStyle="{StaticResource CenterDataDataGrid}"/>
+                <DataGridCheckBoxColumn Header="Show" Binding="{Binding IsShowRussian}" ElementStyle="{StaticResource CheckBoxDataGrid}"/>
+                <DataGridTextColumn Header="Date Add" Binding="{Binding DateAdd}" IsReadOnly="True" ElementStyle="{StaticResource CenterDataDataGrid}"/>
+                <!--<DataGridCheckBoxColumn Header="Analog" />-->
+                <DataGridTemplateColumn>
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button Command="{Binding DataContext.ShowAnalog, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}"
+                                    CommandParameter="{Binding}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
             </DataGrid.Columns>
-            <DataGrid.RowDetailsTemplate>
+            <!--<DataGrid.RowDetailsTemplate >
                 <DataTemplate>
-                    <Border BorderThickness="0" Background="BlanchedAlmond" Padding="10">
+                    <DataGrid AutoGenerateColumns="False" ItemsSource="{Binding ListSample}">
+                        <DataGridTextColumn  Header="EnglishPhrase" Binding="{Binding EnglishPhrase}" />
+                        <DataGridCheckBoxColumn Header="Show" Binding="{Binding IsShowEnglish}"/>
+                        <DataGridTextColumn Header="Russian" Binding="{Binding RussianPhrase}" />
+                    </DataGrid>
+                    --><!--<Border BorderThickness="0" Background="BlanchedAlmond" Padding="10">
                         <StackPanel Orientation="Vertical">
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock FontSize="12" Text="Rus: " VerticalAlignment="Center" />
@@ -68,9 +86,9 @@
                                 <TextBlock FontSize="16" Foreground="MidnightBlue" Text="{Binding IsShowRussian}" VerticalAlignment="Center" />
                             </StackPanel>
                         </StackPanel>
-                    </Border>
+                    </Border>--><!--
                 </DataTemplate>
-            </DataGrid.RowDetailsTemplate>
+            </DataGrid.RowDetailsTemplate>-->
         </DataGrid>
-    </StackPanel>
+    </Grid>
 </UserControl>

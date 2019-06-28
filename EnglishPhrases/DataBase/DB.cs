@@ -18,20 +18,110 @@ namespace EnglishPhrases.DataBase
 
         public static void Init()
         {
-            string dir = AppDomain.CurrentDomain.BaseDirectory;
-            string fullPathToDB = Path.Combine(dir, App.PathToDB);
-            stringConnection = $"Data Source={fullPathToDB}; foreign keys=true; Version=3;";
+            //string dir = AppDomain.CurrentDomain.BaseDirectory;
+            //string fullPathToDB = Path.Combine(dir, App.PathToDB);
+            stringConnection = $"Data Source={App.fullPathToDB}; foreign keys=true; Version=3;";
 
-            if (!File.Exists(fullPathToDB))
+            if (!File.Exists(App.fullPathToDB))
             {
-                SQLiteConnection.CreateFile(fullPathToDB);
-                if (File.Exists(fullPathToDB))
+                SQLiteConnection.CreateFile(App.fullPathToDB);
+                if (File.Exists(App.fullPathToDB))
                 {
                     CreateTables();
                 }
                 else MessageBox.Show("Возникла ошибка при создании базы данных");
             }
         }
+
+        //public static void Init()
+        //{
+        //    string dir = AppDomain.CurrentDomain.BaseDirectory;
+        //    string fullPathToDB = Path.Combine(dir, App.PathToDB);
+
+        //    string tempFullPathToDB = Path.Combine(dir, App.tempPath);
+
+        //    stringConnection = $"Data Source={fullPathToDB}; foreign keys=true; Version=3;";
+        //    string strConn = $"Data Source={tempFullPathToDB}; foreign keys=true; Version=3;";
+
+        //    //List<English> Eng = new List<English>();
+        //    //List<Russian> Rus = new List<Russian>();
+        //    List<Translate> Trans = new List<Translate>();
+
+        //    using (SQLiteConnection conn = new SQLiteConnection(strConn))
+        //    {
+        //        conn.Open();
+
+        //        using (SQLiteTransaction transaction = conn.BeginTransaction())
+        //        {
+        //            SQLiteCommand command = new SQLiteCommand(conn);
+        //            command.CommandText = "SELECT * FROM english";
+        //            command.Transaction = transaction;
+
+        //            //using (SQLiteDataReader reader = command.ExecuteReader())
+        //            //{
+        //            //    while (reader.Read())
+        //            //    {
+        //            //        English phrase = new English();
+        //            //        phrase.ID = Convert.ToInt32(reader["id"]);
+        //            //        phrase.SentenceE = reader["sentence"].ToString();
+        //            //        string tmp = reader["pathtosound"].ToString();
+        //            //        if (tmp == "")
+        //            //            tmp = null;
+        //            //        phrase.PathToSoundE = tmp;
+        //            //        Eng.Add(phrase);
+        //            //    }
+        //            //}
+
+        //            //command.CommandText = "SELECT * FROM russian";
+        //            //using (SQLiteDataReader reader = command.ExecuteReader())
+        //            //{
+        //            //    while (reader.Read())
+        //            //    {
+        //            //        Russian phrase = new Russian();
+        //            //        phrase.ID = Convert.ToInt32(reader["id"]);
+        //            //        phrase.SentenceR = reader["sentence"].ToString();
+        //            //        Rus.Add(phrase);
+        //            //    }
+        //            //}
+
+        //            command.CommandText = "SELECT * FROM translate";
+        //            using (SQLiteDataReader reader = command.ExecuteReader())
+        //            {
+        //                while (reader.Read())
+        //                {
+        //                    Translate phrase = new Translate();
+        //                    phrase.ID_English = Convert.ToInt32(reader["id_english"]);
+        //                    phrase.ID_Russian = Convert.ToInt32(reader["id_russian"]);
+        //                    phrase.DateAdd = reader["dateadd"].ToString();
+        //                    Trans.Add(phrase);
+        //                }
+        //            }
+
+
+        //            transaction.Commit();
+        //        }
+        //        conn.Close();
+
+        //    }
+
+        //    //foreach (var t in Eng)
+        //    //{
+        //    //    InsertRow(t);
+        //    //}
+
+        //    //foreach (var t in Rus)
+        //    //{
+        //    //    InsertRow(t);
+        //    //}
+
+        //    foreach (var t in Trans)
+        //    {
+        //        InsertRow(t);
+        //    }
+        //}
+
+
+
 
         private static void CreateTables()
         {
@@ -272,7 +362,6 @@ namespace EnglishPhrases.DataBase
             ObservableCollection<Phrase> result = new ObservableCollection<Phrase>();
             using (SQLiteConnection conn = new SQLiteConnection(stringConnection))
             {
-
                 SQLiteCommand command = new SQLiteCommand(conn);
                 command.CommandText = comm;
 
@@ -315,7 +404,6 @@ namespace EnglishPhrases.DataBase
                         result.Add(phrase);
                     }
                 }
-
                 conn.Close();
             }
             return result;
@@ -331,7 +419,7 @@ namespace EnglishPhrases.DataBase
             [Unique, NotNull]
             public string SentenceE { get; set; }
             [Unique]
-            public string PathToSoundE { get; set; }
+            public string PathToSoundE { get; set; } = null;
             public int CountShowE { get; set; } //количество показов (статистика)
             public bool ShowE { get; set; } //показывать или нет на тренировке 0-false 1-true
             public int CountRightE { get; set; } //количество правильных ответов (статистика)
@@ -352,8 +440,6 @@ namespace EnglishPhrases.DataBase
         [Table]
         public class Translate
         {
-            //[PrimaryKey]
-            //public int ID { get; set; }
             [PrimaryKey, ForeignKey(typeof(English))]
             public int ID_English { get; set; }
             [PrimaryKey, ForeignKey(typeof(Russian))]
