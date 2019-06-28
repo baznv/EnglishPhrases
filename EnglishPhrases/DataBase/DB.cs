@@ -246,20 +246,6 @@ namespace EnglishPhrases.DataBase
                     using (SQLiteCommand command = new SQLiteCommand(conn))
                     {
                         command.Transaction = transaction;
-                        //int id_english = -1;
-                        //int id_russian = -1;
-                        //command.CommandText = $"SELECT * FROM translate WHERE id = \"{phrase.ID}\"";
-                        //using (SQLiteDataReader reader = command.ExecuteReader())
-                        //{
-                        //    while (reader.Read())
-                        //    {
-                        //        id_english = int.Parse(reader["id_english"].ToString());
-                        //        id_russian = int.Parse(reader["id_russian"].ToString());
-                        //    }
-                        //}
-
-                        //command.CommandText = $"UPDATE translate SET show={phrase.IsShow} WHERE id={phrase.ID};";
-                        //command.ExecuteNonQuery();
 
                         command.CommandText = $"UPDATE english SET sentencee=\"{phrase.EnglishPhrase}\", showe={phrase.IsShowEnglish} WHERE id={phrase.ID[0]};";
                         command.ExecuteNonQuery();
