@@ -16,7 +16,11 @@
         <DataGrid AutoGenerateColumns="False" ItemsSource="{Binding ListPhrases}" ColumnWidth="auto" HorizontalAlignment="Center" RowBackground="#E8E9F0" CanUserAddRows="False"
                   AlternatingRowBackground="#FFF9EB"  RowDetailsVisibilityMode="VisibleWhenSelected" FontSize="14">
             <DataGrid.Columns>
+<<<<<<< Updated upstream
                 <DataGridTextColumn Header="English" Binding="{Binding EnglishPhrase}" ElementStyle="{StaticResource WrapTextDataGrid}"/>
+=======
+                <DataGridTextColumn Header="English" Binding="{Binding EnglishPhrase}" HeaderStyle="{StaticResource leftHeaderCell}" CellStyle="{StaticResource leftCell}"/>
+>>>>>>> Stashed changes
                 <DataGridTemplateColumn Header="Sound" >
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
@@ -43,6 +47,7 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
+<<<<<<< Updated upstream
                 <DataGridTextColumn Header="Count" Binding="{Binding CountShowEnglish}" IsReadOnly="True" ElementStyle="{StaticResource CenterDataDataGrid}"/>
                 <DataGridTextColumn Header="Right" Binding="{Binding CountRightEnglish}" IsReadOnly="True" ElementStyle="{StaticResource CenterDataDataGrid}"/>
                 <DataGridTextColumn Header="% Right" Binding="{Binding PercentRightEnglish}" IsReadOnly="True" ElementStyle="{StaticResource CenterDataDataGrid}"/>
@@ -63,6 +68,18 @@
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
 
+=======
+                <DataGridTextColumn Header="Count" Binding="{Binding CountShowEnglish}" IsReadOnly="True"/>
+                <DataGridTextColumn Header="Right" Binding="{Binding CountRightEnglish}" IsReadOnly="True"/>
+                <DataGridTextColumn Header="% Right" Binding="{Binding PercentRightEnglish}" IsReadOnly="True"/>
+                <DataGridCheckBoxColumn Header="Show" Binding="{Binding IsShowEnglish}"/>
+                <DataGridTextColumn Header="Russian" Binding="{Binding RussianPhrase}" />
+                <DataGridTextColumn Header="Count" Binding="{Binding CountShowRussian}" IsReadOnly="True"/>
+                <DataGridTextColumn Header="Right" Binding="{Binding CountRightRussian}" IsReadOnly="True"/>
+                <DataGridTextColumn Header="% Right" Binding="{Binding PercentRightRussian}" IsReadOnly="True"/>
+                <DataGridCheckBoxColumn Header="Show" Binding="{Binding IsShowRussian}"/>
+                <DataGridTextColumn Header="Date Add" Binding="{Binding DateAdd}" IsReadOnly="True" HeaderStyle="{StaticResource rightHeaderCell}" CellStyle="{StaticResource leftCell}"/>
+>>>>>>> Stashed changes
             </DataGrid.Columns>
             <!--<DataGrid.RowDetailsTemplate >
                 <DataTemplate>
