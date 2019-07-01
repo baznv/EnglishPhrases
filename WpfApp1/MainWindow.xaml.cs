@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -33,17 +35,53 @@ namespace WpfApp1
                 new Temp() { One="eeeeeeeeeeee", Two="fffffffff", Three="ttttooooooooooootttttt"},
                 new Temp() { One="ggggggg", Two="nnnnnn", Three="kkkkkkkkkk"},
                 new Temp() { One="ddddddd", Two="eeeeeeee", Three="tttthhhhhhhhhtttttt"},
-                new Temp() { One="pppppppppp", Two="ssssssssss", Three="gggggggggggg"},
-
+                new Temp() { One="pppppppppp", Two="ssssssssss", Three="gggggggggggg"}
             };
+
             DataContext = this;
         }
     }
 
-    public class Temp
+    public class Temp : INotifyPropertyChanged
     {
-        public string One { get; set; }
-        public string Two { get; set; }
-        public string Three { get; set; }
+        private string one;
+        public string One
+        {
+            get { return one; }
+            set
+            {
+                one = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private string two;
+        public string Two
+        {
+            get { return two; }
+            set
+            {
+                two = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private string three;
+        public string Three
+        {
+            get { return three; }
+            set
+            {
+                three = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        public void OnPropertyChanged([CallerMemberName]string prop = "")
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
+        }
+
     }
 }

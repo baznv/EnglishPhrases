@@ -16,11 +16,7 @@
         <DataGrid AutoGenerateColumns="False" ItemsSource="{Binding ListPhrases}" ColumnWidth="auto" HorizontalAlignment="Center" RowBackground="#E8E9F0" CanUserAddRows="False"
                   AlternatingRowBackground="#FFF9EB"  RowDetailsVisibilityMode="VisibleWhenSelected" FontSize="14">
             <DataGrid.Columns>
-<<<<<<< Updated upstream
-                <DataGridTextColumn Header="English" Binding="{Binding EnglishPhrase}" ElementStyle="{StaticResource WrapTextDataGrid}"/>
-=======
-                <DataGridTextColumn Header="English" Binding="{Binding EnglishPhrase}" HeaderStyle="{StaticResource leftHeaderCell}" CellStyle="{StaticResource leftCell}"/>
->>>>>>> Stashed changes
+                <DataGridTextColumn Header="English" Binding="{Binding EnglishPhrase}" />
                 <DataGridTemplateColumn Header="Sound" >
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
@@ -47,7 +43,6 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-<<<<<<< Updated upstream
                 <DataGridTextColumn Header="Count" Binding="{Binding CountShowEnglish}" IsReadOnly="True" ElementStyle="{StaticResource CenterDataDataGrid}"/>
                 <DataGridTextColumn Header="Right" Binding="{Binding CountRightEnglish}" IsReadOnly="True" ElementStyle="{StaticResource CenterDataDataGrid}"/>
                 <DataGridTextColumn Header="% Right" Binding="{Binding PercentRightEnglish}" IsReadOnly="True" ElementStyle="{StaticResource CenterDataDataGrid}"/>
@@ -59,7 +54,7 @@
                 <DataGridCheckBoxColumn Header="Show" Binding="{Binding IsShowRussian}" ElementStyle="{StaticResource CheckBoxDataGrid}"/>
                 <DataGridTextColumn Header="Date Add" Binding="{Binding DateAdd}" IsReadOnly="True" ElementStyle="{StaticResource CenterDataDataGrid}"/>
                 <!--<DataGridCheckBoxColumn Header="Analog" />-->
-                <DataGridTemplateColumn>
+                <DataGridTemplateColumn >
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <Button Command="{Binding DataContext.ShowAnalog, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}"
@@ -68,8 +63,7 @@
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
 
-=======
-                <DataGridTextColumn Header="Count" Binding="{Binding CountShowEnglish}" IsReadOnly="True"/>
+                <!--<DataGridTextColumn Header="Count" Binding="{Binding CountShowEnglish}" IsReadOnly="True"/>
                 <DataGridTextColumn Header="Right" Binding="{Binding CountRightEnglish}" IsReadOnly="True"/>
                 <DataGridTextColumn Header="% Right" Binding="{Binding PercentRightEnglish}" IsReadOnly="True"/>
                 <DataGridCheckBoxColumn Header="Show" Binding="{Binding IsShowEnglish}"/>
@@ -78,8 +72,7 @@
                 <DataGridTextColumn Header="Right" Binding="{Binding CountRightRussian}" IsReadOnly="True"/>
                 <DataGridTextColumn Header="% Right" Binding="{Binding PercentRightRussian}" IsReadOnly="True"/>
                 <DataGridCheckBoxColumn Header="Show" Binding="{Binding IsShowRussian}"/>
-                <DataGridTextColumn Header="Date Add" Binding="{Binding DateAdd}" IsReadOnly="True" HeaderStyle="{StaticResource rightHeaderCell}" CellStyle="{StaticResource leftCell}"/>
->>>>>>> Stashed changes
+                <DataGridTextColumn Header="Date Add" Binding="{Binding DateAdd}" IsReadOnly="True" HeaderStyle="{StaticResource rightHeaderCell}" CellStyle="{StaticResource leftCell}"/>-->
             </DataGrid.Columns>
             <!--<DataGrid.RowDetailsTemplate >
                 <DataTemplate>
