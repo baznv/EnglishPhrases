@@ -6,8 +6,21 @@
              xmlns:local="clr-namespace:EnglishPhrases.Views"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVisible"/>
+    </UserControl.Resources>
     <StackPanel>
-        <TextBlock Text="Строка" HorizontalAlignment="Center" Margin="15" TextWrapping="Wrap" Height="Auto"/>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="20">
+            <CheckBox Margin="10" IsChecked="{Binding IsEnglish}">Английские фразы</CheckBox>
+            <CheckBox Margin="10" IsChecked="{Binding IsRussian}">Русские фразы</CheckBox>
+            <CheckBox Margin="10" IsChecked="{Binding IsAudio}">Аудио</CheckBox>
+        </StackPanel>
+        <TextBlock Text="{Binding EnglishFromRandomPhrase}" HorizontalAlignment="Center" Margin="15" TextWrapping="Wrap" Height="Auto"
+                   Visibility="{Binding EnglishOutput, Converter={StaticResource BoolToVisible}, FallbackValue=Collapsed}"/>
+        <TextBlock Text="{Binding RussianFromRandomPhrase}" HorizontalAlignment="Center" Margin="15" TextWrapping="Wrap" Height="Auto"
+                   Visibility="{Binding RussianOutput, Converter={StaticResource BoolToVisible}, FallbackValue=Collapsed}"/>
+        <MediaElement UnloadedBehavior="Close" LoadedBehavior="Play" Name="my_media" Source="{Binding UriSound}"
+                      Visibility="{Binding SoundOutput, Converter={StaticResource BoolToVisible}, FallbackValue=Collapsed}"/>
         <TextBox Text="Ответ" HorizontalAlignment="Center" Margin="15"/>
         <Button Content="Проверить" Width="200" Margin="15"/>
     </StackPanel>

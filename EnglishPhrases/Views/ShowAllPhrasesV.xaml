@@ -8,7 +8,7 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
-        <vm:PathToSoundConverter x:Key="PathToSoundConverter" />
+        <!--<vm:PathToSoundConverter x:Key="PathToSoundConverter" />-->
     </UserControl.Resources>
     <Grid>
         <!--<CheckBox Content="Аналоги" HorizontalAlignment="Center" Margin="10" IsChecked="{Binding Analog}"/>-->

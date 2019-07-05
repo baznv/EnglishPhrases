@@ -94,12 +94,8 @@ namespace EnglishPhrases.ViewModels
 
         private void GetAnalog(object p)
         {
-            ObservableCollection<Models.Phrase> temp = new ObservableCollection<Models.Phrase>() { ListPhrases[0], ListPhrases[1] };
-            ListPhrases.Clear();
-            foreach (var item in temp)
-            {
-                ListPhrases.Add(item);
-            }
+            //ObservableCollection<Models.Phrase> temp = (p as Models.Phrase).GetAnalog();
+            ListPhrases = (p as Models.Phrase).GetAnalog();
         }
 
         public void Init()
@@ -122,19 +118,5 @@ namespace EnglishPhrases.ViewModels
 
     }
 
-    public class PathToSoundConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            var temp = new Uri(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, value.ToString()));
-            return new Uri(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, value.ToString()));
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            return DependencyProperty.UnsetValue;
-        }
-
-    }
 
 }

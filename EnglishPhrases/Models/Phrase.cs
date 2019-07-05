@@ -102,6 +102,7 @@ namespace EnglishPhrases.Models
         }
 
         private int countShowRussian; //количество показов (статистика)
+
         public int CountShowRussian
         {
             get { return countShowRussian; }
@@ -158,8 +159,6 @@ namespace EnglishPhrases.Models
             }
         }
 
-
-
         public void Save()
         {
             DataBase.DB.SaveToDB(this);
@@ -174,6 +173,16 @@ namespace EnglishPhrases.Models
         public static ObservableCollection<Phrase> GetAllPhrases()
         {
             return DataBase.DB.GetAllPhrases();
+        }
+
+        internal ObservableCollection<Phrase> GetAnalog()
+        {
+            return DataBase.DB.GetAnalogPhrase(this);
+        }
+
+        internal static Phrase GetRandomPhrase()
+        {
+            return DataBase.DB.GetRandomPhrase();
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

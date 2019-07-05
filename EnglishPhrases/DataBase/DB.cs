@@ -33,6 +33,101 @@ namespace EnglishPhrases.DataBase
             }
         }
 
+        internal static ObservableCollection<Phrase> GetAnalogPhrase(Phrase phrase)
+        {
+            ObservableCollection<Phrase> result = new ObservableCollection<Phrase>();
+            using (SQLiteConnection conn = new SQLiteConnection(stringConnection))
+            {
+                conn.Open();
+
+                using (SQLiteTransaction transaction = conn.BeginTransaction())
+                {
+                    SQLiteCommand command = new SQLiteCommand(conn);
+                    command.CommandText = $"SELECT * FROM translate WHERE translate.id_english = {phrase.ID[0]} OR translate.id_russian = {phrase.ID[1]}";
+                    command.Transaction = transaction;
+
+                    using (SQLiteDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            Phrase tempPhrase = new Phrase();
+                            tempPhrase.ID = new int[] { Convert.ToInt32(reader["id_english"]), Convert.ToInt32(reader["id_russian"]) };
+                            tempPhrase.DateAdd = reader["dateadd"].ToString();
+                            result.Add(tempPhrase);
+                        }
+                    }
+
+                    for (int i = 0; i < result.Count; i++)
+                    {
+                        command.CommandText = $"SELECT * FROM english WHERE id = {result[i].ID[0]}";
+                        using (SQLiteDataReader reader = command.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                result[i].EnglishPhrase = reader["sentencee"].ToString();
+                                result[i].PathToSound = reader["pathtosounde"].ToString();
+                                result[i].CountShowEnglish = Convert.ToInt32(reader["countshowe"]);
+                                result[i].IsShowEnglish = Convert.ToBoolean(Convert.ToInt32(reader["showe"]));
+                                result[i].CountRightEnglish = Convert.ToInt32(reader["countrighte"]);
+                            }
+                        }
+
+                        command.CommandText = $"SELECT * FROM russian WHERE id = {result[i].ID[1]}";
+                        using (SQLiteDataReader reader = command.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                result[i].RussianPhrase = reader["sentencer"].ToString();
+                                result[i].CountShowRussian = Convert.ToInt32(reader["countshowr"]);
+                                result[i].IsShowRussian = Convert.ToBoolean(Convert.ToInt32(reader["showr"]));
+                                result[i].CountRightRussian = Convert.ToInt32(reader["countrightr"]);
+                            }
+                        }
+                    }
+
+                    transaction.Commit();
+                }
+                conn.Close();
+            }
+            return result;
+        }
+
+        internal static Phrase GetRandomPhrase()
+        {
+            Phrase phrase = new Phrase();
+            using (SQLiteConnection conn = new SQLiteConnection(stringConnection))
+            {
+                SQLiteCommand command = new SQLiteCommand(conn);
+                //SELECT * FROM (SELECT * FROM translate WHERE (id_english, id_russian) IN (SELECT id_english, id_russian FROM translate ORDER BY RANDOM() LIMIT 1)) INNER JOIN english ON translate.id_english = english.id INNER JOIN russian ON translate.id_russian = russian.id
+                command.CommandText = @"SELECT * FROM 
+                                        (SELECT * FROM translate WHERE (id_english, id_russian) IN (SELECT id_english, id_russian FROM translate ORDER BY RANDOM() LIMIT 1)) 
+                                        AS rand
+                                        INNER JOIN english ON rand.id_english = english.id 
+                                        INNER JOIN russian ON rand.id_russian = russian.id;";
+                conn.Open();
+
+                using (SQLiteDataReader reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        phrase.ID = new int[] { Convert.ToInt32(reader["id_english"]), Convert.ToInt32(reader["id_russian"]) };
+                        phrase.DateAdd = reader["dateadd"].ToString();
+                        phrase.EnglishPhrase = reader["sentencee"].ToString();
+                        phrase.PathToSound = reader["pathtosounde"].ToString();
+                        phrase.CountShowEnglish = Convert.ToInt32(reader["countshowe"]);
+                        phrase.IsShowEnglish = Convert.ToBoolean(Convert.ToInt32(reader["showe"]));
+                        phrase.CountRightEnglish = Convert.ToInt32(reader["countrighte"]);
+                        phrase.RussianPhrase = reader["sentencer"].ToString();
+                        phrase.CountShowRussian = Convert.ToInt32(reader["countshowr"]);
+                        phrase.IsShowRussian = Convert.ToBoolean(Convert.ToInt32(reader["showr"]));
+                        phrase.CountRightRussian = Convert.ToInt32(reader["countrightr"]);
+                    }
+                }
+                conn.Close();
+            }
+            return phrase;
+        }
+
         //public static void Init()
         //{
         //    string dir = AppDomain.CurrentDomain.BaseDirectory;
@@ -292,8 +387,6 @@ namespace EnglishPhrases.DataBase
             translate.DateAdd = DateTime.Now.ToString("yyyy.MM.dd");
             InsertRow(translate);
         }
-
-
 
 
         internal static ObservableCollection<Models.Setting> GetAllSettings()
