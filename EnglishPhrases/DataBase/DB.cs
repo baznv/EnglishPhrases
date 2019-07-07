@@ -293,10 +293,17 @@ namespace EnglishPhrases.DataBase
                     PropertyInfo fi = type.GetProperty(fields[i]);
                     command.Parameters.AddWithValue(fields[i], fi.GetValue(obj));
                 }
-                var t = command.ExecuteScalar();
-                id = int.Parse(t.ToString());
-                PropertyInfo fi_id = type.GetProperty("ID");
-                fi_id?.SetValue(obj, id);
+                try
+                {
+                    var t = command.ExecuteScalar();
+                    id = int.Parse(t.ToString());
+                    PropertyInfo fi_id = type.GetProperty("ID");
+                    fi_id?.SetValue(obj, id);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.ToString());
+                }
 
                 conn.Close();
             }
