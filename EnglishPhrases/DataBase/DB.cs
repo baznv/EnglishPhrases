@@ -65,10 +65,10 @@ namespace EnglishPhrases.DataBase
                             while (reader.Read())
                             {
                                 result[i].EnglishPhrase = reader["sentencee"].ToString();
-                                result[i].PathToSound = reader["pathtosounde"].ToString();
-                                result[i].CountShowEnglish = Convert.ToInt32(reader["countshowe"]);
-                                result[i].IsShowEnglish = Convert.ToBoolean(Convert.ToInt32(reader["showe"]));
-                                result[i].CountRightEnglish = Convert.ToInt32(reader["countrighte"]);
+                                result[i].Sound = reader["pathtosounde"].ToString();
+                                //result[i].CountShowEnglish = Convert.ToInt32(reader["countshowe"]);
+                                //result[i].IsShowEnglish = Convert.ToBoolean(Convert.ToInt32(reader["showsentencestorussian"]));
+                                //result[i].CountRightEnglish = Convert.ToInt32(reader["countrighte"]);
                             }
                         }
 
@@ -78,9 +78,9 @@ namespace EnglishPhrases.DataBase
                             while (reader.Read())
                             {
                                 result[i].RussianPhrase = reader["sentencer"].ToString();
-                                result[i].CountShowRussian = Convert.ToInt32(reader["countshowr"]);
-                                result[i].IsShowRussian = Convert.ToBoolean(Convert.ToInt32(reader["showr"]));
-                                result[i].CountRightRussian = Convert.ToInt32(reader["countrightr"]);
+                                //result[i].CountShowRussian = Convert.ToInt32(reader["countshowr"]);
+                                //result[i].IsShowRussian = Convert.ToBoolean(Convert.ToInt32(reader["showr"]));
+                                //result[i].CountRightRussian = Convert.ToInt32(reader["countrightr"]);
                             }
                         }
                     }
@@ -91,6 +91,8 @@ namespace EnglishPhrases.DataBase
             }
             return result;
         }
+
+        
 
         internal static Phrase GetRandomPhrase()
         {
@@ -108,19 +110,20 @@ namespace EnglishPhrases.DataBase
 
                 using (SQLiteDataReader reader = command.ExecuteReader())
                 {
+                    English eng = new English();
                     while (reader.Read())
                     {
-                        phrase.ID = new int[] { Convert.ToInt32(reader["id_english"]), Convert.ToInt32(reader["id_russian"]) };
-                        phrase.DateAdd = reader["dateadd"].ToString();
-                        phrase.EnglishPhrase = reader["sentencee"].ToString();
-                        phrase.PathToSound = reader["pathtosounde"].ToString();
-                        phrase.CountShowEnglish = Convert.ToInt32(reader["countshowe"]);
-                        phrase.IsShowEnglish = Convert.ToBoolean(Convert.ToInt32(reader["showe"]));
-                        phrase.CountRightEnglish = Convert.ToInt32(reader["countrighte"]);
-                        phrase.RussianPhrase = reader["sentencer"].ToString();
-                        phrase.CountShowRussian = Convert.ToInt32(reader["countshowr"]);
-                        phrase.IsShowRussian = Convert.ToBoolean(Convert.ToInt32(reader["showr"]));
-                        phrase.CountRightRussian = Convert.ToInt32(reader["countrightr"]);
+                        phrase.ID = new int[] { Convert.ToInt32(reader[nameof(Translate.ID_English).ToString().ToLower()]), Convert.ToInt32(reader[nameof(Translate.ID_Russian).ToString().ToLower()]) };
+                        phrase.DateAdd = reader[nameof(Translate.DateAdd).ToString().ToLower()].ToString();
+                        phrase.EnglishPhrase = reader[nameof(English.EnglishPhrase).ToString().ToLower()].ToString();
+                        phrase.Sound = reader[nameof(English.Sound).ToString().ToLower()].ToString();
+                        //phrase.CountShowEnglish = Convert.ToInt32(reader["countshowe"]);
+                        //phrase.IsShowEnglish = Convert.ToBoolean(Convert.ToInt32(reader[eng.ShowSentenceToRussian.ToString()]));
+                        //phrase.CountRightEnglish = Convert.ToInt32(reader["countrighte"]);
+                        phrase.RussianPhrase = reader[nameof(Russian.RussianPhrase).ToString().ToLower()].ToString();
+                        //phrase.CountShowRussian = Convert.ToInt32(reader["countshowr"]);
+                        //phrase.IsShowRussian = Convert.ToBoolean(Convert.ToInt32(reader["showr"]));
+                        //phrase.CountRightRussian = Convert.ToInt32(reader["countrightr"]);
                     }
                 }
                 conn.Close();
@@ -130,16 +133,25 @@ namespace EnglishPhrases.DataBase
 
         //public static void Init()
         //{
-        //    string dir = AppDomain.CurrentDomain.BaseDirectory;
-        //    string fullPathToDB = Path.Combine(dir, App.PathToDB);
+        //    if (!File.Exists(App.fullPathToDB))
+        //    {
+        //        SQLiteConnection.CreateFile(App.fullPathToDB);
+        //        if (File.Exists(App.fullPathToDB))
+        //        {
+        //            CreateTables();
+        //        }
+        //        else MessageBox.Show("Возникла ошибка при создании базы данных");
+        //    }
 
+        //    string dir = AppDomain.CurrentDomain.BaseDirectory;
+        //    string fullPathToDB = App.fullPathToDB;
         //    string tempFullPathToDB = Path.Combine(dir, App.tempPath);
 
         //    stringConnection = $"Data Source={fullPathToDB}; foreign keys=true; Version=3;";
         //    string strConn = $"Data Source={tempFullPathToDB}; foreign keys=true; Version=3;";
 
-        //    //List<English> Eng = new List<English>();
-        //    //List<Russian> Rus = new List<Russian>();
+        //    List<English> Eng = new List<English>();
+        //    List<Russian> Rus = new List<Russian>();
         //    List<Translate> Trans = new List<Translate>();
 
         //    using (SQLiteConnection conn = new SQLiteConnection(strConn))
@@ -149,69 +161,74 @@ namespace EnglishPhrases.DataBase
         //        using (SQLiteTransaction transaction = conn.BeginTransaction())
         //        {
         //            SQLiteCommand command = new SQLiteCommand(conn);
-        //            command.CommandText = "SELECT * FROM english";
         //            command.Transaction = transaction;
 
-        //            //using (SQLiteDataReader reader = command.ExecuteReader())
-        //            //{
-        //            //    while (reader.Read())
-        //            //    {
-        //            //        English phrase = new English();
-        //            //        phrase.ID = Convert.ToInt32(reader["id"]);
-        //            //        phrase.SentenceE = reader["sentence"].ToString();
-        //            //        string tmp = reader["pathtosound"].ToString();
-        //            //        if (tmp == "")
-        //            //            tmp = null;
-        //            //        phrase.PathToSoundE = tmp;
-        //            //        Eng.Add(phrase);
-        //            //    }
-        //            //}
+        //            command.CommandText = "SELECT * FROM english";
+        //            using (SQLiteDataReader reader = command.ExecuteReader())
+        //            {
+        //                while (reader.Read())
+        //                {
+        //                    English eng = new English();
+        //                    eng.ID = Convert.ToInt32(reader[nameof(English.ID).ToString().ToLower()]);
+        //                    eng.EnglishPhrase = reader[nameof(English.EnglishPhrase).ToString().ToLower()].ToString();
+        //                    string tmp = reader[nameof(English.Sound).ToString().ToLower()].ToString();
+        //                    if (tmp == "")
+        //                        tmp = null;
+        //                    eng.Sound = tmp;
+        //                    Eng.Add(eng);
+        //                }
+        //            }
 
-        //            //command.CommandText = "SELECT * FROM russian";
-        //            //using (SQLiteDataReader reader = command.ExecuteReader())
-        //            //{
-        //            //    while (reader.Read())
-        //            //    {
-        //            //        Russian phrase = new Russian();
-        //            //        phrase.ID = Convert.ToInt32(reader["id"]);
-        //            //        phrase.SentenceR = reader["sentence"].ToString();
-        //            //        Rus.Add(phrase);
-        //            //    }
-        //            //}
+        //            command.CommandText = "SELECT * FROM russian";
+        //            using (SQLiteDataReader reader = command.ExecuteReader())
+        //            {
+        //                while (reader.Read())
+        //                {
+        //                    Russian rus = new Russian()
+        //                    {
+        //                        ID = Convert.ToInt32(reader[nameof(Russian.ID).ToString().ToLower()]),
+        //                        RussianPhrase = reader[nameof(Russian.RussianPhrase).ToString().ToLower()].ToString()
+        //                    };
+        //                    Rus.Add(rus);
+        //                }
+        //            }
 
         //            command.CommandText = "SELECT * FROM translate";
         //            using (SQLiteDataReader reader = command.ExecuteReader())
         //            {
         //                while (reader.Read())
         //                {
-        //                    Translate phrase = new Translate();
-        //                    phrase.ID_English = Convert.ToInt32(reader["id_english"]);
-        //                    phrase.ID_Russian = Convert.ToInt32(reader["id_russian"]);
-        //                    phrase.DateAdd = reader["dateadd"].ToString();
+        //                    Translate phrase = new Translate()
+        //                    {
+        //                        ID_English = Convert.ToInt32(reader[nameof(Translate.ID_English).ToString().ToLower()]),
+        //                        ID_Russian = Convert.ToInt32(reader[nameof(Translate.ID_Russian).ToString().ToLower()]),
+        //                        DateAdd = reader[nameof(Translate.DateAdd).ToString().ToLower()].ToString()
+        //                    };
         //                    Trans.Add(phrase);
         //                }
         //            }
 
+        //            foreach (var en in Eng)
+        //            {
+        //                command.CommandText = $"INSERT INTO english (id,englishphrase, pathtosound) VALUE ({en.ID}, {en.EnglishPhrase}, {en.Sound}";
+        //                command.ExecuteNonQuery();
+        //            }
+
+        //            foreach (var ru in Rus)
+        //            {
+        //                command.CommandText = $"INSERT INTO russian (id, russianphrase) VALUE ({ru.ID}, {ru.RussianPhrase}";
+        //                command.ExecuteNonQuery();
+        //            }
+
+        //            foreach (var tr in Trans)
+        //            {
+        //                command.CommandText = $"INSERT INTO translate (id_english, id_russian, dateadd) VALUE ({tr.ID_English}, {tr.ID_Russian}, {tr.DateAdd}";
+        //                command.ExecuteNonQuery();
+        //            }
 
         //            transaction.Commit();
         //        }
         //        conn.Close();
-
-        //    }
-
-        //    //foreach (var t in Eng)
-        //    //{
-        //    //    InsertRow(t);
-        //    //}
-
-        //    //foreach (var t in Rus)
-        //    //{
-        //    //    InsertRow(t);
-        //    //}
-
-        //    foreach (var t in Trans)
-        //    {
-        //        InsertRow(t);
         //    }
         //}
 
@@ -357,12 +374,12 @@ namespace EnglishPhrases.DataBase
                 conn.Open();
                 SQLiteCommand command = new SQLiteCommand(conn);
 
-                command.CommandText = $"SELECT id FROM english WHERE sentenceE = \"{phrase.EnglishPhrase}\"";
+                command.CommandText = $"SELECT id FROM english WHERE {nameof(English.EnglishPhrase).ToString().ToLower()} = \"{phrase.EnglishPhrase}\"";
                 object temp = command.ExecuteScalar();
                 if (!(temp == null))
                     english.ID = int.Parse(temp.ToString());
 
-                command.CommandText = $"SELECT id FROM russian WHERE sentenceR = \"{phrase.RussianPhrase}\"";
+                command.CommandText = $"SELECT id FROM russian WHERE {nameof(Russian.RussianPhrase).ToString().ToLower()} = \"{phrase.RussianPhrase}\"";
                 temp = command.ExecuteScalar();
                 if (!(temp == null))
                     russian.ID = int.Parse(temp.ToString());
@@ -372,21 +389,29 @@ namespace EnglishPhrases.DataBase
 
             if (english.ID == 0)
             {
-                english.SentenceE = phrase.EnglishPhrase;
-                english.PathToSoundE = phrase.PathToSound;
-                english.ShowE = phrase.IsShowEnglish;
-                english.CountShowE = phrase.CountShowEnglish;
-                english.CountRightE = phrase.CountRightEnglish;
+                english.EnglishPhrase = phrase.EnglishPhrase;
+                english.Sound = phrase.Sound;
+                //english.IsShowSentenceToRussianE = phrase.IsShowEnglish;
+                //english.ShowSentenceToRussian = phrase.CountShowEnglish;
+                //english.RightSentenceToRussianE = phrase.CountRightEnglish;
                 InsertRow(english);
+            }
+            else
+            {
+                //command.CommandText = $"SELECT id_english FROM translate WHERE id_russian (SELECT id_russian FROM translate WHERE {nameof(Translate.ID_English).ToString().ToLower()} = \"{english.ID}\")";
             }
 
             if (russian.ID == 0)
             {
-                russian.SentenceR = phrase.RussianPhrase;
-                russian.ShowR = phrase.IsShowRussian;
-                russian.CountShowR = phrase.CountShowRussian;
-                russian.CountRightR = phrase.CountRightRussian;
+                russian.RussianPhrase = phrase.RussianPhrase;
+                //russian.IsShowSentenceToEnglishR = phrase.IsShowRussian;
+                //russian.ShowSentenceToEnglish = phrase.CountShowRussian;
+                //russian.RightSentenceToEnglish = phrase.CountRightRussian;
                 InsertRow(russian);
+            }
+            else
+            {
+                //command.CommandText = $"SELECT id_russian FROM translate WHERE id_english (SELECT id_english FROM translate WHERE {nameof(Translate.ID_Russian).ToString().ToLower()} = \"{russian.ID}\")";
             }
 
             translate.ID_English = english.ID;
@@ -437,11 +462,18 @@ namespace EnglishPhrases.DataBase
                     {
                         command.Transaction = transaction;
 
-                        command.CommandText = $"UPDATE english SET sentencee=\"{phrase.EnglishPhrase}\", showe={phrase.IsShowEnglish} WHERE id={phrase.ID[0]};";
+                        //command.CommandText = $"UPDATE english SET sentencee=\"{phrase.EnglishPhrase}\", showe={phrase.IsShowEnglish} WHERE id={phrase.ID[0]};";
+                        //command.ExecuteNonQuery();
+
+                        //command.CommandText = $"UPDATE russian SET sentencer=\"{phrase.RussianPhrase}\", showr={phrase.IsShowRussian} WHERE id={phrase.ID[1]};";
+                        //command.ExecuteNonQuery();
+
+                        command.CommandText = $"UPDATE english SET sentencee=\"{phrase.EnglishPhrase}\" WHERE id={phrase.ID[0]};";
                         command.ExecuteNonQuery();
 
-                        command.CommandText = $"UPDATE russian SET sentencer=\"{phrase.RussianPhrase}\", showr={phrase.IsShowRussian} WHERE id={phrase.ID[1]};";
+                        command.CommandText = $"UPDATE russian SET sentencer=\"{phrase.RussianPhrase}\" WHERE id={phrase.ID[1]};";
                         command.ExecuteNonQuery();
+
                         transaction.Commit();
                     }
                 }
@@ -449,9 +481,6 @@ namespace EnglishPhrases.DataBase
                 conn.Close();
             }
         }
-
-
-
 
 
 
@@ -471,35 +500,18 @@ namespace EnglishPhrases.DataBase
                 {
                     while (reader.Read())
                     {
-                        //string str0 = ""; // $"{reader.GetName(0)} - {reader.GetValue(0)} \n";
-                        //string str1 = ""; // $"{reader.GetName(1)} - {reader.GetValue(1)} \n";
-                        //string str2 = ""; // $"{reader.GetName(2)} - {reader.GetValue(2)} \n";
-                        //string str3 = ""; // $"{reader.GetName(3)} - {reader.GetValue(3)} \n";
-                        //string str4 = ""; // $"{reader.GetName(4)} - {reader.GetValue(4)} \n";
-                        //string str5 = ""; // $"{reader.GetName(5)} - {reader.GetValue(5)} \n";
-                        //string str6 = ""; // $"{reader.GetName(6)} - {reader.GetValue(6)} \n";
-                        //string str7 = ""; // $"{reader.GetName(7)} - {reader.GetValue(7)} \n";
-                        //string str8 = $"{reader.GetName(8)} - {reader.GetValue(8)} \n";
-                        //string str9 = $"{reader.GetName(9)} - {reader.GetValue(9)} \n";
-                        //string str10 = $"{reader.GetName(10)} - {reader.GetValue(10)} \n";
-                        //string str11 = $"{reader.GetName(11)} - {reader.GetValue(11)} \n";
-                        //string str12 = $"{reader.GetName(12)} - {reader.GetValue(12)} \n";
-                        //string str13 = $"{reader.GetName(13)} - {reader.GetValue(13)} \n";
-                        ////string str14 = $"{reader.GetName(14)} - {reader.GetValue(14)} \n";
-
-                        //MessageBox.Show($"{str0} {str1} {str2} {str3} {str4} {str5} {str6} {str7} {str8} {str9} {str10} {str11} {str12} {str13}");
                         Phrase phrase = new Phrase();
-                        phrase.ID = new int[] { Convert.ToInt32(reader["id_english"]), Convert.ToInt32(reader["id_russian"]) };
-                        phrase.DateAdd = reader["dateadd"].ToString();
-                        phrase.EnglishPhrase = reader["sentencee"].ToString();
-                        phrase.PathToSound = reader["pathtosounde"].ToString();
-                        phrase.CountShowEnglish = Convert.ToInt32(reader["countshowe"]);
-                        phrase.IsShowEnglish = Convert.ToBoolean(Convert.ToInt32(reader["showe"]));
-                        phrase.CountRightEnglish = Convert.ToInt32(reader["countrighte"]);
-                        phrase.RussianPhrase = reader["sentencer"].ToString();
-                        phrase.CountShowRussian = Convert.ToInt32(reader["countshowr"]);
-                        phrase.IsShowRussian = Convert.ToBoolean(Convert.ToInt32(reader["showr"]));
-                        phrase.CountRightRussian = Convert.ToInt32(reader["countrightr"]);
+                        phrase.ID = new int[] { Convert.ToInt32(reader[nameof(Translate.ID_English).ToString().ToLower()]), Convert.ToInt32(reader[nameof(Translate.ID_Russian).ToString().ToLower()]) };
+                        phrase.DateAdd = reader[nameof(Translate.DateAdd).ToString().ToLower()].ToString();
+                        phrase.EnglishPhrase = reader[nameof(English.EnglishPhrase).ToString().ToLower()].ToString();
+                        phrase.Sound = reader[nameof(English.Sound).ToString().ToLower()].ToString();
+                        //phrase.CountShowEnglish = Convert.ToInt32(reader[nameof(English.ShowSentenceToRussian).ToString().ToLower()]);
+                        //phrase.IsShowEnglish = Convert.ToBoolean(Convert.ToInt32(reader[nameof(English.IsShowSentenceToRussianE).ToString().ToLower()]));
+                        //phrase.CountRightEnglish = Convert.ToInt32(reader[nameof(English.RightSentenceToRussianE).ToString().ToLower()]);
+                        phrase.RussianPhrase = reader[nameof(Russian.RussianPhrase).ToString().ToLower()].ToString();
+                        //phrase.CountShowRussian = Convert.ToInt32(reader[nameof(Russian.ShowSentenceToEnglish).ToString().ToLower()]);
+                        //phrase.IsShowRussian = Convert.ToBoolean(Convert.ToInt32(reader[nameof(Russian.IsShowSentenceToEnglishR).ToString().ToLower()]));
+                        //phrase.CountRightRussian = Convert.ToInt32(reader[nameof(Russian.RightSentenceToEnglish).ToString().ToLower()]);
 
                         result.Add(phrase);
                     }
@@ -510,19 +522,24 @@ namespace EnglishPhrases.DataBase
         }
 
 
-
         [Table]
         public class English
         {
             [PrimaryKey]
             public int ID { get; set; }
             [Unique, NotNull]
-            public string SentenceE { get; set; }
+            public string EnglishPhrase { get; set; }
             [Unique]
-            public string PathToSoundE { get; set; } = null;
-            public int CountShowE { get; set; } //количество показов (статистика)
-            public bool ShowE { get; set; } //показывать или нет на тренировке 0-false 1-true
-            public int CountRightE { get; set; } //количество правильных ответов (статистика)
+            public string Sound { get; set; } = null;
+            //public int ShowSentenceToRussian { get; set; } //количество показов предложения (статистика)
+            //public int ShowSoundToRussianE { get; set; } //количество показов озвучка (статистика)
+            //public int ShowSoundToEnglishE { get; set; } //количество показов озвучка (статистика)
+            //public int RightSentenceToRussianE { get; set; } //количество правильных ответов (статистика)
+            //public int RightSoundToRussianE { get; set; } //количество правильных ответов (статистика)
+            //public int RightSoundToEnglishE { get; set; } //количество правильных ответов (статистика)
+            //public bool IsShowSentenceToRussianE { get; set; } //показывать или нет на тренировке 0-false 1-true
+            //public bool IsShowSoundToRussianE { get; set; } //показывать или нет на тренировке 0-false 1-true
+            //public bool IsShowSoundToEnglishE { get; set; } //показывать или нет на тренировке 0-false 1-true
         }
 
         [Table]
@@ -531,10 +548,10 @@ namespace EnglishPhrases.DataBase
             [PrimaryKey]
             public int ID { get; set; }
             [Unique, NotNull]
-            public string SentenceR { get; set; }
-            public int CountShowR { get; set; } //количество показов (статистика)
-            public bool ShowR { get; set; } //показывать или нет на тренировке 0-false 1-true
-            public int CountRightR { get; set; } //количество правильных ответов (статистика)
+            public string RussianPhrase { get; set; }
+            //public int ShowSentenceToEnglish { get; set; } //количество показов (статистика)
+            //public bool IsShowSentenceToEnglishR { get; set; } //показывать или нет на тренировке 0-false 1-true
+            //public int RightSentenceToEnglish { get; set; } //количество правильных ответов (статистика)
         }
 
         [Table]

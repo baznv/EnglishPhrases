@@ -43,25 +43,25 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTextColumn Header="Count" Binding="{Binding CountShowEnglish}" IsReadOnly="True" ElementStyle="{StaticResource CenterDataDataGrid}"/>
+                <!--<DataGridTextColumn Header="Count" Binding="{Binding CountShowEnglish}" IsReadOnly="True" ElementStyle="{StaticResource CenterDataDataGrid}"/>
                 <DataGridTextColumn Header="Right" Binding="{Binding CountRightEnglish}" IsReadOnly="True" ElementStyle="{StaticResource CenterDataDataGrid}"/>
                 <DataGridTextColumn Header="% Right" Binding="{Binding PercentRightEnglish}" IsReadOnly="True" ElementStyle="{StaticResource CenterDataDataGrid}"/>
-                <DataGridCheckBoxColumn Header="Show" Binding="{Binding IsShowEnglish}" ElementStyle="{StaticResource CheckBoxDataGrid}"/>
+                <DataGridCheckBoxColumn Header="Show" Binding="{Binding IsShowEnglish}" ElementStyle="{StaticResource CheckBoxDataGrid}"/>-->
                 <DataGridTextColumn Header="Russian" Binding="{Binding RussianPhrase}" ElementStyle="{StaticResource WrapTextDataGrid}"/>
-                <DataGridTextColumn Header="Count" Binding="{Binding CountShowRussian}" IsReadOnly="True" ElementStyle="{StaticResource CenterDataDataGrid}"/>
+                <!--<DataGridTextColumn Header="Count" Binding="{Binding CountShowRussian}" IsReadOnly="True" ElementStyle="{StaticResource CenterDataDataGrid}"/>
                 <DataGridTextColumn Header="Right" Binding="{Binding CountRightRussian}" IsReadOnly="True" ElementStyle="{StaticResource CenterDataDataGrid}"/>
                 <DataGridTextColumn Header="% Right" Binding="{Binding PercentRightRussian}" IsReadOnly="True" ElementStyle="{StaticResource CenterDataDataGrid}"/>
-                <DataGridCheckBoxColumn Header="Show" Binding="{Binding IsShowRussian}" ElementStyle="{StaticResource CheckBoxDataGrid}"/>
+                <DataGridCheckBoxColumn Header="Show" Binding="{Binding IsShowRussian}" ElementStyle="{StaticResource CheckBoxDataGrid}"/>-->
                 <DataGridTextColumn Header="Date Add" Binding="{Binding DateAdd}" IsReadOnly="True" ElementStyle="{StaticResource CenterDataDataGrid}"/>
                 <!--<DataGridCheckBoxColumn Header="Analog" />-->
-                <DataGridTemplateColumn >
+                <!--<DataGridTemplateColumn >
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <Button Command="{Binding DataContext.ShowAnalog, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}"
                                     CommandParameter="{Binding}" />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
+                </DataGridTemplateColumn>-->
 
                 <!--<DataGridTextColumn Header="Count" Binding="{Binding CountShowEnglish}" IsReadOnly="True"/>
                 <DataGridTextColumn Header="Right" Binding="{Binding CountRightEnglish}" IsReadOnly="True"/>

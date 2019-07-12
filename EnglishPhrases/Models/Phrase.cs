@@ -33,62 +33,62 @@ namespace EnglishPhrases.Models
             }
         }
 
-        private string pathToSound;
-        public string PathToSound
+        private string sound;
+        public string Sound
         {
-            get { return pathToSound; }
+            get { return sound; }
             set
             {
-                pathToSound = value;
+                sound = value;
                 OnPropertyChanged();
             }
         }
 
-        private int countShowEnglish; //количество показов (статистика)
-        public int CountShowEnglish
-        {
-            get { return countShowEnglish; }
-            set
-            {
-                countShowEnglish = value;
-                OnPropertyChanged();
-            }
-        }
+        //private int countShowEnglish; //количество показов (статистика)
+        //public int CountShowEnglish
+        //{
+        //    get { return countShowEnglish; }
+        //    set
+        //    {
+        //        countShowEnglish = value;
+        //        OnPropertyChanged();
+        //    }
+        //}
 
-        private int countRightEnglish; //количество правильных ответов (статистика)
-        public int CountRightEnglish
-        {
-            get { return countRightEnglish; }
-            set
-            {
-                countRightEnglish = value;
-                OnPropertyChanged();
-            }
-        }
+        //private int countRightEnglish; //количество правильных ответов (статистика)
+        //public int CountRightEnglish
+        //{
+        //    get { return countRightEnglish; }
+        //    set
+        //    {
+        //        countRightEnglish = value;
+        //        OnPropertyChanged();
+        //    }
+        //}
 
-        public string PercentRightEnglish
-        {
-            get
-            {
-                if (CountShowEnglish != 0)
-                {
-                    int t = (CountRightEnglish / CountShowEnglish) * 100;
-                    return $"{t}%";
-                }
-                return null;
-            }
-        }
+        //public string PercentRightEnglish
+        //{
+        //    get
+        //    {
+        //        if (CountShowEnglish != 0)
+        //        {
+        //            int t = (CountRightEnglish / CountShowEnglish) * 100;
+        //            return $"{t}%";
+        //        }
+        //        return null;
+        //    }
+        //}
 
-        private bool isShowEnglish = true; //показывать или нет на тренировке 0-false 1-true
-        public bool IsShowEnglish
-        {
-            get { return isShowEnglish; }
-            set
-            {
-                isShowEnglish = value;
-                OnPropertyChanged();
-            }
-        }
+        //private bool isShowEnglish = true; //показывать или нет на тренировке 0-false 1-true
+        //public bool IsShowEnglish
+        //{
+        //    get { return isShowEnglish; }
+        //    set
+        //    {
+        //        isShowEnglish = value;
+        //        OnPropertyChanged();
+        //    }
+        //}
 
         private string russianPhrase;
         public string RussianPhrase
@@ -101,52 +101,52 @@ namespace EnglishPhrases.Models
             }
         }
 
-        private int countShowRussian; //количество показов (статистика)
+        //private int countShowRussian; //количество показов (статистика)
 
-        public int CountShowRussian
-        {
-            get { return countShowRussian; }
-            set
-            {
-                countShowRussian = value;
-                OnPropertyChanged();
-            }
-        }
+        //public int CountShowRussian
+        //{
+        //    get { return countShowRussian; }
+        //    set
+        //    {
+        //        countShowRussian = value;
+        //        OnPropertyChanged();
+        //    }
+        //}
 
-        private int countRightRussian; //количество правильных ответов (статистика)
-        public int CountRightRussian
-        {
-            get { return countRightRussian; }
-            set
-            {
-                countRightRussian = value;
-                OnPropertyChanged();
-            }
-        }
+        //private int countRightRussian; //количество правильных ответов (статистика)
+        //public int CountRightRussian
+        //{
+        //    get { return countRightRussian; }
+        //    set
+        //    {
+        //        countRightRussian = value;
+        //        OnPropertyChanged();
+        //    }
+        //}
 
-        public string PercentRightRussian
-        {
-            get
-            {
-                if (CountShowRussian != 0)
-                {
-                    int t = (CountRightRussian / CountShowRussian) * 100;
-                    return $"{t}%";
-                }
-                return null;
-            }
-        }
+        //public string PercentRightRussian
+        //{
+        //    get
+        //    {
+        //        if (CountShowRussian != 0)
+        //        {
+        //            int t = (CountRightRussian / CountShowRussian) * 100;
+        //            return $"{t}%";
+        //        }
+        //        return null;
+        //    }
+        //}
 
-        private bool isShowRussian = true; //показывать или нет на тренировке 0-false 1-true
-        public bool IsShowRussian
-        {
-            get { return isShowRussian; }
-            set
-            {
-                isShowRussian = value;
-                OnPropertyChanged();
-            }
-        }
+        //private bool isShowRussian = true; //показывать или нет на тренировке 0-false 1-true
+        //public bool IsShowRussian
+        //{
+        //    get { return isShowRussian; }
+        //    set
+        //    {
+        //        isShowRussian = value;
+        //        OnPropertyChanged();
+        //    }
+        //}
 
         private string dateAdd;
         public string DateAdd

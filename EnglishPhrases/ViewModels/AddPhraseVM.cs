@@ -69,7 +69,7 @@ namespace EnglishPhrases.ViewModels
             if (openFileDialog.ShowDialog() == true)
             {
                 //if (Path.GetDirectoryName(openFileDialog.FileName).Equals(App.PathToSounds))
-                    CurrentPhrase.PathToSound = openFileDialog.SafeFileName;
+                    CurrentPhrase.Sound = openFileDialog.SafeFileName;
             }
         }
 

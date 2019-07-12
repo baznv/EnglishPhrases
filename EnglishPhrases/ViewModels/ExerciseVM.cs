@@ -4,11 +4,13 @@ using System.ComponentModel;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
+using System.Windows.Input;
 
 namespace EnglishPhrases.ViewModels
 {
@@ -34,17 +36,17 @@ namespace EnglishPhrases.ViewModels
             }
         }
 
-        //английская фраза из случайной фразы
-        private string englishFromRandomPhrase = null;
-        public string EnglishFromRandomPhrase
-        {
-            get { return englishFromRandomPhrase; }
-            set
-            {
-                englishFromRandomPhrase = RandomPhrase.EnglishPhrase;
-                OnPropertyChanged();
-            }
-        }
+        ////английская фраза из случайной фразы
+        //private string englishFromRandomPhrase = null;
+        //public string EnglishFromRandomPhrase
+        //{
+        //    get { return englishFromRandomPhrase; }
+        //    set
+        //    {
+        //        englishFromRandomPhrase = RandomPhrase.EnglishPhrase;
+        //        OnPropertyChanged();
+        //    }
+        //}
 
         //выводить ли английскую фразу
         private bool englishOutput = false;
@@ -58,17 +60,17 @@ namespace EnglishPhrases.ViewModels
             }
         }
 
-        //русская фраза из случайной фразы
-        private string russianFromRandomPhrase = null;
-        public string RussianFromRandomPhrase
-        {
-            get { return russianFromRandomPhrase; }
-            set
-            {
-                russianFromRandomPhrase = RandomPhrase.RussianPhrase;
-                OnPropertyChanged();
-            }
-        }
+        ////русская фраза из случайной фразы
+        //private string russianFromRandomPhrase = null;
+        //public string RussianFromRandomPhrase
+        //{
+        //    get { return russianFromRandomPhrase; }
+        //    set
+        //    {
+        //        russianFromRandomPhrase = RandomPhrase.RussianPhrase;
+        //        OnPropertyChanged();
+        //    }
+        //}
 
         //выводить ли русскую фразу
         private bool russianOutput = false;
@@ -89,7 +91,9 @@ namespace EnglishPhrases.ViewModels
             get { return uriSound; }
             set
             {
-                UriSound = new Uri(Path.Combine(App.fullPathToSounds, RandomPhrase.PathToSound.ToString()));
+                uriSound = value;
+
+                //UriSound = new Uri(Path.Combine(App.fullPathToSounds, RandomPhrase.Sound.ToString()));
                 OnPropertyChanged();
             }
         }
@@ -145,9 +149,23 @@ namespace EnglishPhrases.ViewModels
         public void Init()
         {
             RandomPhrase = Models.Phrase.GetRandomPhrase();
-            var PropertiesToShow = typeof(ExerciseVM).GetProperties().Where(c => c.Name.Contains("Output")).ToArray();
+            PropertyInfo[] PropertiesToShow = typeof(ExerciseVM).GetProperties().Where(c => c.Name.Contains("Output")).ToArray();
+            foreach (var t in PropertiesToShow)
+                t.SetValue(this, false);
+
+            if (!IsEnglish)
+                PropertiesToShow = PropertiesToShow.Where(c => !c.Name.Contains("English")).ToArray();
+
+            if (!IsRussian)
+                PropertiesToShow = PropertiesToShow.Where(c => !c.Name.Contains("Russian")).ToArray();
+
+            if (!IsAudio || (IsAudio && RandomPhrase.Sound == ""))
+                PropertiesToShow = PropertiesToShow.Where(c => !c.Name.Contains("Sound")).ToArray();
+            else
+                UriSound = new Uri(Path.Combine(App.fullPathToSounds, RandomPhrase.Sound.ToString()));
+
             Random random = new Random();
-            var randomProperty = PropertiesToShow[random.Next(PropertiesToShow.Length)];
+            PropertyInfo randomProperty = PropertiesToShow[random.Next(PropertiesToShow.Length)];
             randomProperty.SetValue(this, true);
         }
 
@@ -157,20 +175,20 @@ namespace EnglishPhrases.ViewModels
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
         }
 
-        public class PathToSoundConverter : IValueConverter
-        {
-            public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-            {
-                var temp = new Uri(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, value.ToString()));
-                return new Uri(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, value.ToString()));
-            }
+        //public class PathToSoundConverter : IValueConverter
+        //{
+        //    public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        //    {
+        //        var temp = new Uri(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, value.ToString()));
+        //        return new Uri(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, value.ToString()));
+        //    }
 
-            public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-            {
-                return DependencyProperty.UnsetValue;
-            }
+        //    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        //    {
+        //        return DependencyProperty.UnsetValue;
+        //    }
 
-        }
+        //}
 
 
     }

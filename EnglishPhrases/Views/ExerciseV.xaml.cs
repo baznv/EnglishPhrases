@@ -23,6 +23,9 @@ namespace EnglishPhrases.Views
         public ExerciseV()
         {
             InitializeComponent();
+            //Answer.Focus();
+            //Keyboard.Focus(Answer);
+
         }
     }
 }
