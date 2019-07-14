@@ -161,7 +161,7 @@ namespace EnglishPhrases.ViewModels
 
             if (!IsAudio || (IsAudio && RandomPhrase.Sound == ""))
                 PropertiesToShow = PropertiesToShow.Where(c => !c.Name.Contains("Sound")).ToArray();
-            else
+            //else
                 UriSound = new Uri(Path.Combine(App.fullPathToSounds, RandomPhrase.Sound.ToString()));
 
             Random random = new Random();

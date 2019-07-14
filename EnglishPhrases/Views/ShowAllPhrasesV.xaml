@@ -37,7 +37,7 @@
                                 </Button>
                             </StackPanel>-->
                             <Button Command="{Binding DataContext.SoundCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}"
-                                    CommandParameter="{Binding PathToSound}">
+                                    CommandParameter="{Binding Sound}">
                                 <Image Source="..\Img\sound24.png" />
                             </Button>
                         </DataTemplate>

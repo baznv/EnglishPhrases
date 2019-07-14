@@ -14,7 +14,7 @@
         </Border>
         <StackPanel Orientation="Horizontal">
             <Button Content="Path" Margin="15,0" Command="{Binding SavePathCommand}" Background="#8A795A"/>
-            <TextBlock Text="{Binding CurrentPhrase.PathToSound}" Margin="15,0"/>
+            <TextBlock Text="{Binding CurrentPhrase.Sound}" Margin="15,0"/>
         </StackPanel>
         <Label Content="Russian"/>
         <Border BorderThickness="1" BorderBrush="#8E826C" Margin="15" CornerRadius="4" Background="White">
