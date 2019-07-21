@@ -92,7 +92,7 @@ namespace EnglishPhrases.DataBase
             return result;
         }
 
-        
+
 
         internal static Phrase GetRandomPhrase()
         {
@@ -102,22 +102,21 @@ namespace EnglishPhrases.DataBase
                 SQLiteCommand command = new SQLiteCommand(conn);
                 //SELECT * FROM (SELECT * FROM translate WHERE (id_english, id_russian) IN (SELECT id_english, id_russian FROM translate ORDER BY RANDOM() LIMIT 1)) INNER JOIN english ON translate.id_english = english.id INNER JOIN russian ON translate.id_russian = russian.id
                 command.CommandText = @"SELECT * FROM 
-                                        (SELECT * FROM translate WHERE (id_english, id_russian) IN (SELECT id_english, id_russian FROM translate ORDER BY RANDOM() LIMIT 1)) 
+                                        (SELECT * FROM translate WHERE (same_english, same_russian) IN (SELECT same_english, same_russian FROM translate ORDER BY RANDOM() LIMIT 1)) 
                                         AS rand
-                                        INNER JOIN english ON rand.id_english = english.id 
-                                        INNER JOIN russian ON rand.id_russian = russian.id;";
+                                        INNER JOIN english ON rand.same_english = english.same_eng 
+                                        INNER JOIN russian ON rand.same_russian = russian.same_ru;";
                 conn.Open();
 
                 using (SQLiteDataReader reader = command.ExecuteReader())
                 {
-                    English eng = new English();
                     while (reader.Read())
                     {
-                        phrase.ID = new int[] { Convert.ToInt32(reader[nameof(Translate.ID_English).ToString().ToLower()]), Convert.ToInt32(reader[nameof(Translate.ID_Russian).ToString().ToLower()]) };
+                        phrase.ID = new int[] { Convert.ToInt32(reader[nameof(Translate.Same_English).ToString().ToLower()]), Convert.ToInt32(reader[nameof(Translate.Same_Russian).ToString().ToLower()]) };
                         phrase.DateAdd = reader[nameof(Translate.DateAdd).ToString().ToLower()].ToString();
-                        phrase.EnglishPhrase = reader[nameof(English.EnglishPhrase).ToString().ToLower()].ToString();
-                        phrase.Sound = reader[nameof(English.Sound).ToString().ToLower()].ToString();
-                        phrase.RussianPhrase = reader[nameof(Russian.RussianPhrase).ToString().ToLower()].ToString();
+                        phrase.EnglishPhrase = reader[nameof(English.Sentence_eng).ToString().ToLower()].ToString();
+                        phrase.Sound = reader[nameof(English.Sound_eng).ToString().ToLower()].ToString();
+                        phrase.RussianPhrase = reader[nameof(Russian.Sentence_ru).ToString().ToLower()].ToString();
                     }
                 }
                 conn.Close();
@@ -127,7 +126,6 @@ namespace EnglishPhrases.DataBase
 
         //public static void Init()
         //{
-
         //    string dir = AppDomain.CurrentDomain.BaseDirectory;
         //    string fullPathToDB = App.fullPathToDB;
         //    string tempFullPathToDB = Path.Combine(dir, App.tempPath);
@@ -145,112 +143,118 @@ namespace EnglishPhrases.DataBase
         //        else MessageBox.Show("Возникла ошибка при создании базы данных");
         //    }
 
-        //    List<English> Eng = new List<English>();
-        //    List<Russian> Rus = new List<Russian>();
-        //    List<Translate> Trans = new List<Translate>();
-
+        //    List<Phrase> phr = new List<Phrase>();
         //    using (SQLiteConnection conn = new SQLiteConnection(strConn))
         //    {
         //        conn.Open();
-
         //        using (SQLiteTransaction transaction = conn.BeginTransaction())
         //        {
         //            SQLiteCommand command = new SQLiteCommand(conn);
         //            command.Transaction = transaction;
 
-        //            command.CommandText = "SELECT * FROM english";
+        //            command.CommandText = @"SELECT * FROM translate 
+        //                                    INNER JOIN english ON translate.id_english = english.id
+        //                                    INNER JOIN russian ON translate.id_russian = russian.id";
+
         //            using (SQLiteDataReader reader = command.ExecuteReader())
         //            {
         //                while (reader.Read())
         //                {
-        //                    English eng = new English();
-        //                    eng.ID = Convert.ToInt32(reader[nameof(English.ID).ToString().ToLower()]);
-        //                    eng.EnglishPhrase = reader["sentencee"].ToString();
-        //                    string tmp = reader["pathtosounde"].ToString();
+        //                    Phrase phrase = new Phrase();
+        //                    phrase.ID = new int[] { Convert.ToInt32(reader["id_english"]), Convert.ToInt32(reader["id_russian"]) };
+        //                    phrase.EnglishPhrase = reader["englishphrase"].ToString();
+        //                    string tmp = reader["sound"].ToString();
         //                    if (tmp == "")
         //                        tmp = null;
-        //                    eng.Sound = tmp;
-        //                    Eng.Add(eng);
+        //                    phrase.Sound = tmp;
+        //                    phrase.RussianPhrase = reader["russianphrase"].ToString();
+        //                    phrase.DateAdd = reader["dateadd"].ToString();
+
+        //                    phr.Add(phrase);
         //                }
         //            }
-
-        //            command.CommandText = "SELECT * FROM russian";
-        //            using (SQLiteDataReader reader = command.ExecuteReader())
-        //            {
-        //                while (reader.Read())
-        //                {
-        //                    Russian rus = new Russian()
-        //                    {
-        //                        ID = Convert.ToInt32(reader[nameof(Russian.ID).ToString().ToLower()]),
-        //                        RussianPhrase = reader["sentencer"].ToString()
-        //                    };
-        //                    Rus.Add(rus);
-        //                }
-        //            }
-
-        //            command.CommandText = "SELECT * FROM translate";
-        //            using (SQLiteDataReader reader = command.ExecuteReader())
-        //            {
-        //                while (reader.Read())
-        //                {
-        //                    Translate phrase = new Translate()
-        //                    {
-        //                        ID_English = Convert.ToInt32(reader[nameof(Translate.ID_English).ToString().ToLower()]),
-        //                        ID_Russian = Convert.ToInt32(reader[nameof(Translate.ID_Russian).ToString().ToLower()]),
-        //                        DateAdd = reader[nameof(Translate.DateAdd).ToString().ToLower()].ToString()
-        //                    };
-        //                    Trans.Add(phrase);
-        //                }
-        //            }
-
-
         //            transaction.Commit();
         //        }
         //        conn.Close();
         //    }
-
 
         //    using (SQLiteConnection conn = new SQLiteConnection(stringConnection))
         //    {
         //        conn.Open();
-
         //        using (SQLiteTransaction transaction = conn.BeginTransaction())
         //        {
         //            SQLiteCommand command = new SQLiteCommand(conn);
         //            command.Transaction = transaction;
 
-
-        //            foreach (var en in Eng)
+        //            foreach (var p in phr)
         //            {
-        //                if (en.Sound != null)
-        //                    command.CommandText = $"INSERT INTO english (id, englishphrase, sound) VALUES ({en.ID}, \"{en.EnglishPhrase}\", \"{en.Sound}\")";
+        //                English e = new English()
+        //                {
+        //                    Sentence = p.EnglishPhrase,
+        //                    Sound = p.Sound
+        //                };
+
+        //                Russian r = new Russian()
+        //                {
+        //                    Sentence = p.RussianPhrase
+        //                };
+
+        //                command.CommandText = $"SELECT same FROM russian WHERE sentence = \"{r.Sentence}\"";
+        //                e.Same = Convert.ToInt32(command.ExecuteScalar());
+
+        //                command.CommandText = $"SELECT same FROM english WHERE sentence = \"{e.Sentence}\"";
+        //                r.Same = Convert.ToInt32(command.ExecuteScalar());
+
+
+        //                if (e.Same > 0 && r.Same == 0)
+        //                {
+        //                    command.CommandText = $"SELECT same_russian FROM translate WHERE same_english == {e.Same}";
+        //                    r.Same = Convert.ToInt32(command.ExecuteScalar());
+        //                }
+
+        //                if (e.Same == 0 && r.Same > 0)
+        //                {
+        //                    command.CommandText = $"SELECT same_english FROM translate WHERE same_russian == {r.Same}";
+        //                    e.Same = Convert.ToInt32(command.ExecuteScalar());
+        //                }
+
+
+        //                if (e.Same == 0)
+        //                {
+        //                    command.CommandText = $"SELECT same FROM english ORDER BY same DESC LIMIT 1";
+        //                    int lastSame = Convert.ToInt32(command.ExecuteScalar());
+        //                    e.Same = lastSame + 1;
+        //                }
+
+        //                if (r.Same == 0)
+        //                {
+        //                    command.CommandText = $"SELECT same FROM russian ORDER BY same DESC LIMIT 1";
+        //                    int lastSame = Convert.ToInt32(command.ExecuteScalar());
+        //                    r.Same = lastSame + 1;
+        //                }
+
+        //                if (e.Sound == null || e.Sound == "")
+        //                {
+        //                    command.CommandText = $"INSERT OR IGNORE INTO english (sentence, sound, same) VALUES (\"{e.Sentence}\", null, {e.Same})";
+        //                    command.ExecuteNonQuery();
+        //                }
         //                else
-        //                    command.CommandText = $"INSERT INTO english (id, englishphrase, sound) VALUES ({en.ID}, \"{en.EnglishPhrase}\", null)";
+        //                {
+        //                    command.CommandText = $"INSERT OR IGNORE INTO english (sentence, sound, same) VALUES (\"{e.Sentence}\", \"{e.Sound}\", {e.Same})";
+        //                    command.ExecuteNonQuery();
+        //                }
+
+        //                command.CommandText = $"INSERT OR IGNORE INTO russian (sentence, same) VALUES (\"{r.Sentence}\", {r.Same})";
+        //                command.ExecuteNonQuery();
+
+        //                command.CommandText = $"INSERT OR IGNORE INTO translate (same_english, same_russian, dateadd) VALUES ({e.Same}, {r.Same}, \"{p.DateAdd}\")";
         //                command.ExecuteNonQuery();
         //            }
-
-        //            foreach (var ru in Rus)
-        //            {
-        //                command.CommandText = $"INSERT INTO russian (id, russianphrase) VALUES ({ru.ID}, \"{ru.RussianPhrase}\")";
-        //                command.ExecuteNonQuery();
-        //            }
-
-        //            foreach (var tr in Trans)
-        //            {
-        //                command.CommandText = $"INSERT INTO translate (id_english, id_russian, dateadd) VALUES ({tr.ID_English}, {tr.ID_Russian}, \"{tr.DateAdd}\")";
-        //                command.ExecuteNonQuery();
-        //            }
-
-
         //            transaction.Commit();
         //        }
         //        conn.Close();
         //    }
-
         //}
-
-
-
 
         private static void CreateTables()
         {
@@ -380,49 +384,95 @@ namespace EnglishPhrases.DataBase
         }
 
 
-        public static void SaveToDB(Phrase phrase)
+        public static void SaveToDB(Phrase p)
         {
-            English english = new English();
-            Russian russian = new Russian();
-
-            //List<int> listAnalogEnglish = new List<int>();
-            //List<int> listAnalogRussian = new List<int>();
-
             using (SQLiteConnection conn = new SQLiteConnection(stringConnection))
             {
                 conn.Open();
                 using (SQLiteTransaction transaction = conn.BeginTransaction())
                 {
-                    using (SQLiteCommand command = new SQLiteCommand(conn))
-                    {
-                        command.Transaction = transaction;
-                        command.CommandText = $"SELECT id FROM english WHERE {nameof(English.EnglishPhrase).ToString().ToLower()} = \"{phrase.EnglishPhrase}\"";
-                        object temp = command.ExecuteScalar();
-                        if (!(temp == null))
-                            english.ID = int.Parse(temp.ToString());
+                    SQLiteCommand command = new SQLiteCommand(conn);
+                    command.Transaction = transaction;
 
-                        command.CommandText = $"SELECT id FROM russian WHERE {nameof(Russian.RussianPhrase).ToString().ToLower()} = \"{phrase.RussianPhrase}\"";
-                        temp = command.ExecuteScalar();
-                        if (!(temp == null))
-                            russian.ID = int.Parse(temp.ToString());
+                        English e = new English()
+                        {
+                            Sentence_eng = p.EnglishPhrase,
+                            Sound_eng = p.Sound
+                        };
+
+                        Russian r = new Russian()
+                        {
+                            Sentence_ru = p.RussianPhrase
+                        };
+
+                        command.CommandText = $"SELECT same FROM russian WHERE sentence = \"{r.Sentence_ru}\"";
+                        e.Same_eng = Convert.ToInt32(command.ExecuteScalar());
+
+                        command.CommandText = $"SELECT same FROM english WHERE sentence = \"{e.Sentence_eng}\"";
+                        r.Same_ru = Convert.ToInt32(command.ExecuteScalar());
+
+
+                    if (e.Same_eng > 0 && r.Same_ru == 0)
+                    {
+                        command.CommandText = $"SELECT same_russian FROM translate WHERE same_english == {e.Sentence_eng}";
+                        r.Same_ru = Convert.ToInt32(command.ExecuteScalar());
                     }
+
+                    if (e.Same_eng == 0 && r.Same_ru > 0)
+                    {
+                        command.CommandText = $"SELECT same_english FROM translate WHERE same_russian == {r.Same_ru}";
+                        e.Same_eng = Convert.ToInt32(command.ExecuteScalar());
+                    }
+
+
+                    if (e.Same_eng == 0)
+                    {
+                        command.CommandText = $"SELECT same FROM english ORDER BY same DESC LIMIT 1";
+                        int lastSame = Convert.ToInt32(command.ExecuteScalar());
+                        e.Same_eng = lastSame + 1;
+                    }
+
+                    if (r.Same_ru == 0)
+                    {
+                        command.CommandText = $"SELECT same FROM russian ORDER BY same DESC LIMIT 1";
+                        int lastSame = Convert.ToInt32(command.ExecuteScalar());
+                        r.Same_ru = lastSame + 1;
+                    }
+
+                    if (e.Sound_eng == null || e.Sound_eng == "")
+                    {
+                        command.CommandText = $"INSERT OR IGNORE INTO english (sentence, sound, same) VALUES (\"{e.Sentence_eng}\", null, {e.Sentence_eng})";
+                        command.ExecuteNonQuery();
+                    }
+                    else
+                    {
+                        command.CommandText = $"INSERT OR IGNORE INTO english (sentence, sound, same) VALUES (\"{e.Sentence_eng}\", \"{e.Sound_eng}\", {e.Same_eng})";
+                        command.ExecuteNonQuery();
+                    }
+
+                    command.CommandText = $"INSERT OR IGNORE INTO russian (sentence, same) VALUES (\"{r.Sentence_ru}\", {r.Same_ru})";
+                    command.ExecuteNonQuery();
+
+                    Translate t = new Translate()
+                    {
+                        Same_English = e.Same_eng,
+                        Same_Russian = r.Same_ru,
+                        DateAdd = DateTime.Now.ToString("yyyy.MM.dd")
+                    };
+
+                    command.CommandText = $"INSERT OR IGNORE INTO translate (same_english, same_russian, dateadd) VALUES ({t.Same_English}, {t.Same_Russian}, \"{t.DateAdd}\")";
+                    command.ExecuteNonQuery();
+
                     transaction.Commit();
                 }
                 conn.Close();
             }
 
-            if (english.ID == 0)
-            {
-                english.EnglishPhrase = phrase.EnglishPhrase;
-                english.Sound = phrase.Sound;
-                InsertRow(english);
-            }
+            //English english = new English();
+            //Russian russian = new Russian();
 
-            if (russian.ID == 0)
-            {
-                russian.RussianPhrase = phrase.RussianPhrase;
-                InsertRow(russian);
-            }
+            ////List<int> listAnalogEnglish = new List<int>();
+            ////List<int> listAnalogRussian = new List<int>();
 
             //using (SQLiteConnection conn = new SQLiteConnection(stringConnection))
             //{
@@ -432,76 +482,112 @@ namespace EnglishPhrases.DataBase
             //        using (SQLiteCommand command = new SQLiteCommand(conn))
             //        {
             //            command.Transaction = transaction;
-            //            command.CommandText = $"SELECT id_english FROM translate WHERE id_russian IN (SELECT id_russian FROM translate WHERE {nameof(Translate.ID_English).ToString().ToLower()} = \"{english.ID}\")";
-            //            using (SQLiteDataReader reader = command.ExecuteReader())
-            //            {
-            //                while (reader.Read())
-            //                {
-            //                    int id = Convert.ToInt32(reader[nameof(Translate.ID_English).ToString().ToLower()]);
-            //                    listAnalogEnglish.Add(id);
-            //                }
-            //            }
-               
-            //            command.CommandText = $"SELECT id_russian FROM translate WHERE id_english IN (SELECT id_english FROM translate WHERE {nameof(Translate.ID_Russian).ToString().ToLower()} = \"{russian.ID}\")";
-            //            using (SQLiteDataReader reader = command.ExecuteReader())
-            //            {
-            //                while (reader.Read())
-            //                {
-            //                    int id = Convert.ToInt32(reader[nameof(Translate.ID_Russian).ToString().ToLower()]);
-            //                    listAnalogRussian.Add(id);
-            //                }
-            //            }
+            //            command.CommandText = $"SELECT id FROM english WHERE {nameof(English.Sentence).ToString().ToLower()} = \"{phrase.EnglishPhrase}\"";
+            //            object temp = command.ExecuteScalar();
+            //            if (!(temp == null))
+            //                english.ID = int.Parse(temp.ToString());
+
+            //            command.CommandText = $"SELECT id FROM russian WHERE {nameof(Russian.Sentence).ToString().ToLower()} = \"{phrase.RussianPhrase}\"";
+            //            temp = command.ExecuteScalar();
+            //            if (!(temp == null))
+            //                russian.ID = int.Parse(temp.ToString());
             //        }
             //        transaction.Commit();
             //    }
             //    conn.Close();
             //}
 
-            Translate trans = new Translate();
-            trans.ID_English = english.ID;
-            trans.ID_Russian = russian.ID;
-            trans.DateAdd = DateTime.Now.ToString("yyyy.MM.dd");
-            try
-            {
-                InsertRow(trans);
-            }
-            catch
-            {
-                MessageBox.Show($"Row id_eng={trans.ID_English} - id_rus={trans.ID_Russian}");
-            }
-
-
-            //foreach (var item in listAnalogRussian)
+            //if (english.ID == 0)
             //{
-            //    Translate translate = new Translate();
-            //    translate.ID_English = english.ID;
-            //    translate.ID_Russian = item;
-            //    translate.DateAdd = DateTime.Now.ToString("yyyy.MM.dd");
-            //    try
-            //    {
-            //        InsertRow(translate);
-            //    }
-            //    catch
-            //    {
-            //        MessageBox.Show($"Row id_eng={translate.ID_English} - id_rus={translate.ID_Russian}");
-            //    }
+            //    english.Sentence = phrase.EnglishPhrase;
+            //    english.Sound = phrase.Sound;
+            //    InsertRow(english);
             //}
 
-            //foreach (var item in listAnalogEnglish)
+            //if (russian.ID == 0)
             //{
-            //    Translate translate = new Translate();
-            //    translate.ID_English = item;
-            //    translate.ID_Russian = russian.ID;
-            //    translate.DateAdd = DateTime.Now.ToString("yyyy.MM.dd");
-            //    try
-            //    {
-            //        InsertRow(translate);
-            //    }
-            //    catch
-            //    {
-            //        MessageBox.Show($"Row id_eng={translate.ID_English} - id_rus={translate.ID_Russian}");
-            //    }
+            //    russian.Sentence = phrase.RussianPhrase;
+            //    InsertRow(russian);
             //}
+
+            ////using (SQLiteConnection conn = new SQLiteConnection(stringConnection))
+            ////{
+            ////    conn.Open();
+            ////    using (SQLiteTransaction transaction = conn.BeginTransaction())
+            ////    {
+            ////        using (SQLiteCommand command = new SQLiteCommand(conn))
+            ////        {
+            ////            command.Transaction = transaction;
+            ////            command.CommandText = $"SELECT id_english FROM translate WHERE id_russian IN (SELECT id_russian FROM translate WHERE {nameof(Translate.ID_English).ToString().ToLower()} = \"{english.ID}\")";
+            ////            using (SQLiteDataReader reader = command.ExecuteReader())
+            ////            {
+            ////                while (reader.Read())
+            ////                {
+            ////                    int id = Convert.ToInt32(reader[nameof(Translate.ID_English).ToString().ToLower()]);
+            ////                    listAnalogEnglish.Add(id);
+            ////                }
+            ////            }
+
+            ////            command.CommandText = $"SELECT id_russian FROM translate WHERE id_english IN (SELECT id_english FROM translate WHERE {nameof(Translate.ID_Russian).ToString().ToLower()} = \"{russian.ID}\")";
+            ////            using (SQLiteDataReader reader = command.ExecuteReader())
+            ////            {
+            ////                while (reader.Read())
+            ////                {
+            ////                    int id = Convert.ToInt32(reader[nameof(Translate.ID_Russian).ToString().ToLower()]);
+            ////                    listAnalogRussian.Add(id);
+            ////                }
+            ////            }
+            ////        }
+            ////        transaction.Commit();
+            ////    }
+            ////    conn.Close();
+            ////}
+
+            //Translate trans = new Translate();
+            //trans.Same_English = english.Same;
+            //trans.Same_Russian = russian.Same;
+            //trans.DateAdd = DateTime.Now.ToString("yyyy.MM.dd");
+            //try
+            //{
+            //    InsertRow(trans);
+            //}
+            //catch
+            //{
+            //    MessageBox.Show($"Row same_eng={trans.Same_English} - same_rus={trans.Same_Russian}");
+            //}
+
+
+            ////foreach (var item in listAnalogRussian)
+            ////{
+            ////    Translate translate = new Translate();
+            ////    translate.ID_English = english.ID;
+            ////    translate.ID_Russian = item;
+            ////    translate.DateAdd = DateTime.Now.ToString("yyyy.MM.dd");
+            ////    try
+            ////    {
+            ////        InsertRow(translate);
+            ////    }
+            ////    catch
+            ////    {
+            ////        MessageBox.Show($"Row id_eng={translate.ID_English} - id_rus={translate.ID_Russian}");
+            ////    }
+            ////}
+
+            ////foreach (var item in listAnalogEnglish)
+            ////{
+            ////    Translate translate = new Translate();
+            ////    translate.ID_English = item;
+            ////    translate.ID_Russian = russian.ID;
+            ////    translate.DateAdd = DateTime.Now.ToString("yyyy.MM.dd");
+            ////    try
+            ////    {
+            ////        InsertRow(translate);
+            ////    }
+            ////    catch
+            ////    {
+            ////        MessageBox.Show($"Row id_eng={translate.ID_English} - id_rus={translate.ID_Russian}");
+            ////    }
+            ////}
         }
 
 
@@ -570,7 +656,7 @@ namespace EnglishPhrases.DataBase
 
         public static ObservableCollection<Phrase> GetAllPhrases()
         {
-            string comm = "SELECT * FROM translate INNER JOIN english ON translate.id_english = english.id INNER JOIN russian ON translate.id_russian = russian.id";
+            string comm = "SELECT * FROM translate INNER JOIN english ON translate.same_english = english.same_eng INNER JOIN russian ON translate.same_russian = russian.same_ru";
 
             ObservableCollection<Phrase> result = new ObservableCollection<Phrase>();
             using (SQLiteConnection conn = new SQLiteConnection(stringConnection))
@@ -585,14 +671,14 @@ namespace EnglishPhrases.DataBase
                     while (reader.Read())
                     {
                         Phrase phrase = new Phrase();
-                        phrase.ID = new int[] { Convert.ToInt32(reader[nameof(Translate.ID_English).ToString().ToLower()]), Convert.ToInt32(reader[nameof(Translate.ID_Russian).ToString().ToLower()]) };
+                        phrase.ID = new int[] { Convert.ToInt32(reader[nameof(Translate.Same_English).ToString().ToLower()]), Convert.ToInt32(reader[nameof(Translate.Same_Russian).ToString().ToLower()]) };
                         phrase.DateAdd = reader[nameof(Translate.DateAdd).ToString().ToLower()].ToString();
-                        phrase.EnglishPhrase = reader[nameof(English.EnglishPhrase).ToString().ToLower()].ToString();
-                        phrase.Sound = reader[nameof(English.Sound).ToString().ToLower()].ToString();
+                        phrase.EnglishPhrase = reader[nameof(English.Sentence_eng).ToString().ToLower()].ToString();
+                        phrase.Sound = reader[nameof(English.Sound_eng).ToString().ToLower()].ToString();
                         //phrase.CountShowEnglish = Convert.ToInt32(reader[nameof(English.ShowSentenceToRussian).ToString().ToLower()]);
                         //phrase.IsShowEnglish = Convert.ToBoolean(Convert.ToInt32(reader[nameof(English.IsShowSentenceToRussianE).ToString().ToLower()]));
                         //phrase.CountRightEnglish = Convert.ToInt32(reader[nameof(English.RightSentenceToRussianE).ToString().ToLower()]);
-                        phrase.RussianPhrase = reader[nameof(Russian.RussianPhrase).ToString().ToLower()].ToString();
+                        phrase.RussianPhrase = reader[nameof(Russian.Sentence_ru).ToString().ToLower()].ToString();
                         //phrase.CountShowRussian = Convert.ToInt32(reader[nameof(Russian.ShowSentenceToEnglish).ToString().ToLower()]);
                         //phrase.IsShowRussian = Convert.ToBoolean(Convert.ToInt32(reader[nameof(Russian.IsShowSentenceToEnglishR).ToString().ToLower()]));
                         //phrase.CountRightRussian = Convert.ToInt32(reader[nameof(Russian.RightSentenceToEnglish).ToString().ToLower()]);
@@ -610,11 +696,14 @@ namespace EnglishPhrases.DataBase
         public class English
         {
             [PrimaryKey]
-            public int ID { get; set; }
+            public int ID_eng { get; set; }
             [Unique, NotNull]
-            public string EnglishPhrase { get; set; }
+            public string Sentence_eng { get; set; }
             [Unique]
-            public string Sound { get; set; } = null;
+            public string Sound_eng { get; set; } = null;
+            [NotNull]
+            public int Same_eng { get; set; }
+
             //public int ShowSentenceToRussian { get; set; } //количество показов предложения (статистика)
             //public int ShowSoundToRussianE { get; set; } //количество показов озвучка (статистика)
             //public int ShowSoundToEnglishE { get; set; } //количество показов озвучка (статистика)
@@ -630,9 +719,12 @@ namespace EnglishPhrases.DataBase
         public class Russian
         {
             [PrimaryKey]
-            public int ID { get; set; }
+            public int ID_ru { get; set; }
             [Unique, NotNull]
-            public string RussianPhrase { get; set; }
+            public string Sentence_ru { get; set; }
+            [NotNull]
+            public int Same_ru { get; set; }
+
             //public int ShowSentenceToEnglish { get; set; } //количество показов (статистика)
             //public bool IsShowSentenceToEnglishR { get; set; } //показывать или нет на тренировке 0-false 1-true
             //public int RightSentenceToEnglish { get; set; } //количество правильных ответов (статистика)
@@ -641,10 +733,14 @@ namespace EnglishPhrases.DataBase
         [Table]
         public class Translate
         {
-            [PrimaryKey, ForeignKey(typeof(English))]
-            public int ID_English { get; set; }
-            [PrimaryKey, ForeignKey(typeof(Russian))]
-            public int ID_Russian { get; set; }
+            //[PrimaryKey]
+            //public int ID { get; set; }
+            //[PrimaryKey, ForeignKey(typeof(English))]
+            [PrimaryKey]
+            public int Same_English { get; set; }
+            //[PrimaryKey, ForeignKey(typeof(Russian))]
+            [PrimaryKey]
+            public int Same_Russian { get; set; }
             [NotNull]
             public string DateAdd { get; set; }
         }

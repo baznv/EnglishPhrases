@@ -16,14 +16,13 @@ namespace EnglishPhrases
     {
         //string dir = AppDomain.CurrentDomain.BaseDirectory;
         private static string PathToData = @"DBData";
-        private static string PathToDB = Path.Combine(PathToData, @"DBPhrasesSimple.db");
+        private static string PathToDB = Path.Combine(PathToData, @"DBTranslate.db");
         private static string PathToSounds = Path.Combine(PathToData, "Sounds");
 
         public static string fullPathToDB = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, PathToDB);
         public static string fullPathToSounds = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, PathToSounds);
 
-        public static string tempPath = Path.Combine(PathToData, @"DBPhrases.db");
-
+        public static string tempPath = Path.Combine(PathToData, @"DBPhrasesSimple.db");
 
         protected override void OnStartup(StartupEventArgs e)
         {
