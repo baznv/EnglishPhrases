@@ -180,9 +180,24 @@ namespace EnglishPhrases.Models
             return DataBase.DB.GetAnalogPhrase(this);
         }
 
-        internal static Phrase GetRandomPhrase()
+        //internal static Phrase GetRandomPhrase()
+        //{
+        //    return DataBase.DB.GetRandomPhrase();
+        //}
+
+        public static string GetRandomEnglish()
         {
-            return DataBase.DB.GetRandomPhrase();
+            return DataBase.DB.GetRandomEnglish();
+        }
+
+        internal static string GetRandomRussian()
+        {
+            return DataBase.DB.GetRandomRussian();
+        }
+
+        internal static string GetRandomSound()
+        {
+            //return DataBase.DB.GetRandomEnglish();
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -205,5 +220,6 @@ namespace EnglishPhrases.Models
         {
             return;
         }
+
     }
 }

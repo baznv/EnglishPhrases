@@ -25,16 +25,50 @@ namespace EnglishPhrases.ViewModels
         }
 
         //случайная фраза из базы данных
-        private Models.Phrase randomPhrase;
-        public Models.Phrase RandomPhrase
+        //private Models.Phrase randomPhrase;
+        //public Models.Phrase RandomPhrase
+        //{
+        //    get { return randomPhrase; }
+        //    set
+        //    {
+        //        randomPhrase = value;
+        //        OnPropertyChanged();
+        //    }
+        //}
+
+        private string randomEnglish;
+        public string RandomEnglish
         {
-            get { return randomPhrase; }
+            get { return randomEnglish; }
             set
             {
-                randomPhrase = value;
+                randomEnglish = value;
                 OnPropertyChanged();
             }
         }
+
+        private string randomRussian;
+        public string RandomRussian
+        {
+            get { return randomRussian; }
+            set
+            {
+                randomRussian = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private string randomSound;
+        public string RandomSound
+        {
+            get { return randomSound; }
+            set
+            {
+                randomSound = value;
+                OnPropertyChanged();
+            }
+        }
+
 
         ////английская фраза из случайной фразы
         //private string englishFromRandomPhrase = null;
@@ -49,16 +83,16 @@ namespace EnglishPhrases.ViewModels
         //}
 
         //выводить ли английскую фразу
-        private bool englishOutput = false;
-        public bool EnglishOutput
-        {
-            get { return englishOutput; }
-            set
-            {
-                englishOutput = value;
-                OnPropertyChanged();
-            }
-        }
+        //private bool englishOutput = false;
+        //public bool EnglishOutput
+        //{
+        //    get { return englishOutput; }
+        //    set
+        //    {
+        //        englishOutput = value;
+        //        OnPropertyChanged();
+        //    }
+        //}
 
         ////русская фраза из случайной фразы
         //private string russianFromRandomPhrase = null;
@@ -73,16 +107,16 @@ namespace EnglishPhrases.ViewModels
         //}
 
         //выводить ли русскую фразу
-        private bool russianOutput = false;
-        public bool RussianOutput
-        {
-            get { return russianOutput; }
-            set
-            {
-                russianOutput = value;
-                OnPropertyChanged();
-            }
-        }
+        //private bool russianOutput = false;
+        //public bool RussianOutput
+        //{
+        //    get { return russianOutput; }
+        //    set
+        //    {
+        //        russianOutput = value;
+        //        OnPropertyChanged();
+        //    }
+        //}
 
         //URI файла, содержащего озвучку английской фразы из случайной фразы
         private Uri uriSound = null;
@@ -99,16 +133,16 @@ namespace EnglishPhrases.ViewModels
         }
 
         //выводить ли звуковую дорожку
-        private bool soundOutput = false;
-        public bool SoundOutput
-        {
-            get { return soundOutput; }
-            set
-            {
-                soundOutput = value;
-                OnPropertyChanged();
-            }
-        }
+        //private bool soundOutput = false;
+        //public bool SoundOutput
+        //{
+        //    get { return soundOutput; }
+        //    set
+        //    {
+        //        soundOutput = value;
+        //        OnPropertyChanged();
+        //    }
+        //}
 
         //использовать ли в тренировке английские фразы
         private bool isEnglish = true;
@@ -148,10 +182,7 @@ namespace EnglishPhrases.ViewModels
 
         public void Init()
         {
-            RandomPhrase = Models.Phrase.GetRandomPhrase();
-            PropertyInfo[] PropertiesToShow = typeof(ExerciseVM).GetProperties().Where(c => c.Name.Contains("Output")).ToArray();
-            foreach (var t in PropertiesToShow)
-                t.SetValue(this, false);
+            PropertyInfo[] PropertiesToShow = typeof(ExerciseVM).GetProperties().Where(c => c.Name.Contains("Is")).ToArray();
 
             if (!IsEnglish)
                 PropertiesToShow = PropertiesToShow.Where(c => !c.Name.Contains("English")).ToArray();
@@ -159,14 +190,48 @@ namespace EnglishPhrases.ViewModels
             if (!IsRussian)
                 PropertiesToShow = PropertiesToShow.Where(c => !c.Name.Contains("Russian")).ToArray();
 
-            if (!IsAudio || (IsAudio && RandomPhrase.Sound == ""))
+            if (!IsAudio)
                 PropertiesToShow = PropertiesToShow.Where(c => !c.Name.Contains("Sound")).ToArray();
-            //else
-                UriSound = new Uri(Path.Combine(App.fullPathToSounds, RandomPhrase.Sound.ToString()));
 
             Random random = new Random();
             PropertyInfo randomProperty = PropertiesToShow[random.Next(PropertiesToShow.Length)];
-            randomProperty.SetValue(this, true);
+
+            if (randomProperty.Name == "IsEnglish")
+            {
+                RandomEnglish = Models.Phrase.GetRandomEnglish();
+            }
+
+            if (randomProperty.Name == "IsRussian")
+            {
+                RandomRussian = Models.Phrase.GetRandomRussian();
+            }
+
+            if (randomProperty.Name == "IsSound")
+            {
+                RandomSound = Models.Phrase.GetRandomSound();
+            }
+
+
+
+
+            //RandomPhrase = Models.Phrase.GetRandomPhrase();
+            //foreach (var t in PropertiesToShow)
+            //    t.SetValue(this, false);
+
+            //if (!IsEnglish)
+            //    PropertiesToShow = PropertiesToShow.Where(c => !c.Name.Contains("English")).ToArray();
+
+            //if (!IsRussian)
+            //    PropertiesToShow = PropertiesToShow.Where(c => !c.Name.Contains("Russian")).ToArray();
+
+            //if (!IsAudio || (IsAudio && RandomPhrase.Sound == ""))
+            //    PropertiesToShow = PropertiesToShow.Where(c => !c.Name.Contains("Sound")).ToArray();
+            //else
+            //    UriSound = new Uri(Path.Combine(App.fullPathToSounds, RandomPhrase.Sound.ToString()));
+
+            //Random random = new Random();
+            //PropertyInfo randomProperty = PropertiesToShow[random.Next(PropertiesToShow.Length)];
+            //randomProperty.SetValue(this, true);
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

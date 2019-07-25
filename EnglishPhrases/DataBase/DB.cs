@@ -124,6 +124,71 @@ namespace EnglishPhrases.DataBase
             return phrase;
         }
 
+        internal static string GetRandomEnglish()
+        {
+            string englishSentence = "";
+            using (SQLiteConnection conn = new SQLiteConnection(stringConnection))
+            {
+                SQLiteCommand command = new SQLiteCommand(conn);
+                command.CommandText = @"SELECT sentence_eng FROM english ORDER BY RANDOM() LIMIT 1);";
+                conn.Open();
+
+                using (SQLiteDataReader reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        englishSentence = reader[nameof(English.Sentence_eng).ToString().ToLower()].ToString();
+                    }
+                }
+                conn.Close();
+            }
+            return englishSentence;
+        }
+
+        internal static string GetRandomRussian()
+        {
+            string russianSentence = "";
+            using (SQLiteConnection conn = new SQLiteConnection(stringConnection))
+            {
+                SQLiteCommand command = new SQLiteCommand(conn);
+                command.CommandText = @"SELECT sentence_ru FROM russian ORDER BY RANDOM() LIMIT 1);";
+                conn.Open();
+
+                using (SQLiteDataReader reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        russianSentence = reader[nameof(Russian.Sentence_ru).ToString().ToLower()].ToString();
+                    }
+                }
+                conn.Close();
+            }
+            return russianSentence;
+        }
+
+        internal static string GetRandomSound()
+        {
+            string sound = "";
+            using (SQLiteConnection conn = new SQLiteConnection(stringConnection))
+            {
+                SQLiteCommand command = new SQLiteCommand(conn);
+                command.CommandText = @"SELECT sound_eng FROM english ORDER BY RANDOM() LIMIT 1 WHERE sound_eng NOT NULL;";
+                conn.Open();
+
+                using (SQLiteDataReader reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        sound = reader[nameof(English.Sound_eng).ToString().ToLower()].ToString();
+                    }
+                }
+                conn.Close();
+            }
+            return sound;
+        }
+
+
+
         //public static void Init()
         //{
         //    string dir = AppDomain.CurrentDomain.BaseDirectory;
@@ -405,16 +470,16 @@ namespace EnglishPhrases.DataBase
                             Sentence_ru = p.RussianPhrase
                         };
 
-                        command.CommandText = $"SELECT same FROM russian WHERE sentence = \"{r.Sentence_ru}\"";
+                        command.CommandText = $"SELECT same_ru FROM russian WHERE sentence_ru = \"{r.Sentence_ru}\"";
                         e.Same_eng = Convert.ToInt32(command.ExecuteScalar());
 
-                        command.CommandText = $"SELECT same FROM english WHERE sentence = \"{e.Sentence_eng}\"";
+                        command.CommandText = $"SELECT same_eng FROM english WHERE sentence_eng = \"{e.Sentence_eng}\"";
                         r.Same_ru = Convert.ToInt32(command.ExecuteScalar());
 
 
                     if (e.Same_eng > 0 && r.Same_ru == 0)
                     {
-                        command.CommandText = $"SELECT same_russian FROM translate WHERE same_english == {e.Sentence_eng}";
+                        command.CommandText = $"SELECT same_russian FROM translate WHERE same_english == {e.Same_eng}";
                         r.Same_ru = Convert.ToInt32(command.ExecuteScalar());
                     }
 
@@ -427,30 +492,30 @@ namespace EnglishPhrases.DataBase
 
                     if (e.Same_eng == 0)
                     {
-                        command.CommandText = $"SELECT same FROM english ORDER BY same DESC LIMIT 1";
+                        command.CommandText = $"SELECT same_eng FROM english ORDER BY same_eng DESC LIMIT 1";
                         int lastSame = Convert.ToInt32(command.ExecuteScalar());
                         e.Same_eng = lastSame + 1;
                     }
 
                     if (r.Same_ru == 0)
                     {
-                        command.CommandText = $"SELECT same FROM russian ORDER BY same DESC LIMIT 1";
+                        command.CommandText = $"SELECT same_ru FROM russian ORDER BY same_ru DESC LIMIT 1";
                         int lastSame = Convert.ToInt32(command.ExecuteScalar());
                         r.Same_ru = lastSame + 1;
                     }
 
                     if (e.Sound_eng == null || e.Sound_eng == "")
                     {
-                        command.CommandText = $"INSERT OR IGNORE INTO english (sentence, sound, same) VALUES (\"{e.Sentence_eng}\", null, {e.Sentence_eng})";
+                        command.CommandText = $"INSERT OR IGNORE INTO english (sentence_eng, sound_eng, same_eng) VALUES (\"{e.Sentence_eng}\", null, {e.Same_eng})";
                         command.ExecuteNonQuery();
                     }
                     else
                     {
-                        command.CommandText = $"INSERT OR IGNORE INTO english (sentence, sound, same) VALUES (\"{e.Sentence_eng}\", \"{e.Sound_eng}\", {e.Same_eng})";
+                        command.CommandText = $"INSERT OR IGNORE INTO english (sentence_eng, sound_eng, same_eng) VALUES (\"{e.Sentence_eng}\", \"{e.Sound_eng}\", {e.Same_eng})";
                         command.ExecuteNonQuery();
                     }
 
-                    command.CommandText = $"INSERT OR IGNORE INTO russian (sentence, same) VALUES (\"{r.Sentence_ru}\", {r.Same_ru})";
+                    command.CommandText = $"INSERT OR IGNORE INTO russian (sentence_ru, same_ru) VALUES (\"{r.Sentence_ru}\", {r.Same_ru})";
                     command.ExecuteNonQuery();
 
                     Translate t = new Translate()

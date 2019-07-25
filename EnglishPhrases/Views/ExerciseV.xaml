@@ -19,13 +19,13 @@
         <Border BorderThickness="1" BorderBrush="#8E826C" Margin="15" CornerRadius="4" Background="White" 
                 Visibility="{Binding EnglishOutput, Converter={StaticResource BoolToVisible}, FallbackValue=Collapsed}">
             <TextBox HorizontalAlignment="Stretch" Height="auto" MinHeight="60" TextWrapping="Wrap" AcceptsReturn="True" Background="Transparent"
-                 Text="{Binding RandomPhrase.EnglishPhrase}" />
+                 Text="{Binding RandomEnglish}" />
         </Border>
 
         <Border BorderThickness="1" BorderBrush="#8E826C" Margin="15" CornerRadius="4" Background="White"
                 Visibility="{Binding RussianOutput, Converter={StaticResource BoolToVisible}, FallbackValue=Collapsed}">
             <TextBox HorizontalAlignment="Stretch" Height="auto" MinHeight="60" TextWrapping="Wrap" AcceptsReturn="True" Background="Transparent"
-                 Text="{Binding RandomPhrase.RussianPhrase}" />
+                 Text="{Binding RandomRussian}" />
         </Border>
 
         <MediaElement UnloadedBehavior="Close" LoadedBehavior="Play" Name="my_media" Source="{Binding UriSound}" />
